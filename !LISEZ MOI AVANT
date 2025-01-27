@@ -1,9 +1,9 @@
 main.py # Point d'entré principal
+game.py # Logique principal du jeu
 menu.py # Getsion du menu principal et des parametres 
 cinematic.py # Gestion des cinématiques
 tutorial.py # Tutoriel interactif avec le compagnon
 save_manager.py # Gestion des sauvegardes
-settings.py # Configuration globale
 player.py # Classe du joueur
 companion.py # Classe du compagnon
 enemy.py # Classe des ennemies
