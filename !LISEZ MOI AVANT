@@ -1,0 +1,159 @@
+main.py # Point d'entré principal
+menu.py # Getsion du menu principal et des parametres 
+cinematic.py # Gestion des cinématiques
+tutorial.py # Tutoriel interactif avec le compagnon
+save_manager.py # Gestion des sauvegardes
+settings.py # Configuration globale
+player.py # Classe du joueur
+companion.py # Classe du compagnon
+enemy.py # Classe des ennemies
+map.py # Generation procedurale des donjons
+ui.py # Interactif utilisateur (HUD)
+
+
+
+
+
+////
+
+- Jeu Solo
+- 2D
+- Roguelite (donc boss a la fin)
+- Vue du dessus
+- Simple mais propre / Ambiance sombre
+- Chill gameplay pas trop de bullet/ennemies
+- Ameliorations au respawn
+- Medieval / Fantasique en interieur
+- Mouvement libre
+- Bullet game allégé
+
+- System de (parry)/Perfect timing sur une attaque mélée sur un ennemie, 
+le jeu se ralentie (ou s'arrette) et le fond se noirci, le system permet de one shot
+et quand on one shot on se fait "propulser" en arriere a la fin et si on rate on se prend
+un degat de l'ennemie (Le system est assez rapide en soit pour perfect)
+
+- Une ability de base ou tu peut te mettre en ombre tu peux pas te faire voir/te faire toucher // On le débloque apres le tuto
+
+- La monnaie c'est les âmes érantes
+ 
+
+
+Script :
+Dans un royaume médiéval plongé dans les ténèbres,  
+Un héros, connu sous le nom de “L’Ombre”, c'est sacrifié en utilisant le parchemin sacré
+dans le but de sauvé l'humanité. Cependant son âme fu supprimer en contre partie de l'utilisation
+de cette arme divine. Le dieu Hadès décida de récupéré ce qui restait de l'âme de ce mortel
+étant intéréssé par son pouvoir pour nettoyer le royaume des morts des âmes érantes
+celui ci doit naviguer à travers des donjons mystérieux et labyrinthiques, affronter des créatures fantastiques 
+et vaincre des boss redoutables pour accomplir sa mission qu'il ne peut refuser étant dicter/diriger.
+
+////
+
+#### Réflexion sur la thématique et la mécanique du jeu :
+## Thème : Royaume médiéval plongé dans les ténèbres, ambiance sombre et mystérieuse.
+
+## Mécaniques principales :
+- Système de parry/perfect timing : Ralentissement du temps, fond noirci, possibilité de one-shot et propulsion en arrière.
+- Capacité d'ombre : Invisibilité et invincibilité temporaire, débloquée après le tutoriel.
+- Monnaie : Âmes errantes.
+
+## Fonctionnalités du jeu
+- Solo, 2D, Roguelite : Boss à la fin de chaque niveau.
+- Vue du dessus : Mouvement libre.
+- Gameplay chill : Moins de bullets et d'ennemis, ambiance sombre mais simple et propre.
+- Améliorations au respawn : Progression basée sur les améliorations après chaque mort.
+
+## Règles et utilisation
+- Règles :
+Le joueur doit naviguer à travers des donjons, affronter des créatures et vaincre des boss.
+Utilisation stratégique des parries et de la capacité d'ombre.
+- Utilisation :
+Contrôles simples et intuitifs.
+Interface utilisateur claire et minimaliste.
+Fonctionnement détaillé de l’interface graphique
+
+## Schémas au brouillon :
+- Écran de jeu principal : Affichage de la santé, des âmes errantes, des capacités disponibles.
+- Écran de pause : Options de sauvegarde, chargement, paramètres.
+- Écran de respawn : Améliorations disponibles, statistiques du joueur.
+
+## Lister les tâches à effectuer
+- Développement :
+Programmation des mécaniques de jeu (parry, capacité d'ombre, etc.).
+Création des niveaux et des boss.
+Conception de l'interface utilisateur.
+- Graphismes :
+Création des sprites et des animations.
+Conception des décors et des effets visuels.
+- Son :
+Conception des effets sonores et de la musique d'ambiance.
+
+
+## Identification des compétences individuelles
+- Programmation : Qui est le plus à l'aise avec Pygame ?
+- Graphismes : Qui a des compétences en dessin et en animation ?
+- Son : Qui peut s'occuper des effets sonores et de la musique ?
+
+## Répartition des tâches
+ # Selon les compétences et les intérêts de chacun :
+- Programmation : Développeur 1 et 2.
+- Graphismes : Développeur 3.
+- Son : Développeur 4.
+
+## Présentation du jeu et de ses fonctionnalités
+#Document de présentation :
+Description du jeu, de son univers et de ses mécaniques.
+Fonctionnalités principales et secondaires.
+Interface utilisateur et contrôles.
+Progrès réalisés et tâches restantes.
+Rédaction du document de présentation
+
+Contenu :
+Ensemble des tâches effectuées.
+Codes réalisés.
+Historique de la réalisation du projet.
+Problèmes rencontrés et solutions apportées.
+Prolongements possibles.
+Présentation individuelle du travail personnel
+
+Chaque membre :
+Décrire son rôle et ses contributions.
+Expliquer les défis rencontrés et comment ils ont été surmontés.
+Partager les leçons apprises et les compétences développées.
+
+
+////
+
+
+### Développeur 1 (Thomas) : Programmation des mécaniques de jeu
+## Tâches :
+
+Implémentation du système de parry/perfect timing.
+Programmation de la capacité d'ombre.
+Développement des mécaniques de mouvement libre.
+Gestion des améliorations au respawn.
+Intégration des éléments de progression (âmes errantes).
+
+### Développeur 2 (Mathias) : Programmation des niveaux et des ennemis
+## Tâches :
+
+Création des donjons et des labyrinthes.
+Programmation des comportements des ennemis.
+Développement des boss et de leurs mécaniques.
+Conception des systèmes de génération procédurale pour les niveaux.
+
+### Développeur 3 (Eloi) : Graphismes et animations
+## Tâches :
+
+Conception des sprites des personnages et des ennemis.
+Création des animations (mouvements, attaques, parry, etc.).
+Conception des décors et des effets visuels.
+Réalisation des interfaces utilisateur (UI).
+Création des assets graphiques pour les menus et les écrans de jeu.
+
+### Développeur 4 (Sacha) : Son et musique
+## Tâches :
+Conception des effets sonores (attaques, parry, capacités, etc.).
+Création de la musique d'ambiance.
+Intégration des sons et de la musique dans le jeu.
+Ajustement des niveaux sonores pour une expérience immersive.
