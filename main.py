@@ -86,7 +86,7 @@ while running:
         game.draw(screen)  # Dessine la scène de jeu
 
     # On raffraichit et limite les FPS
-    pygame.display.flip() #Met a jour l'affichage
+    pygame.display.flip() #Met a jour l'affichage (tout sans spécification)
     clock.tick(FPS) # Limite le taux de FPS max
 
 pygame.quit()

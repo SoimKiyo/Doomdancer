@@ -1,4 +1,5 @@
 import pygame
+import math
 
 # Constantes pour le joueur
 PLAYER_SPEED = 5
@@ -9,6 +10,7 @@ class Player:
     # Initialise le joueur et ses valeurs
     def __init__(self, x, y, width, height):
         self.rect = pygame.Rect(x, y, width, height)  # Rectangle du joueur
+        self.rect.center = (x,y) # Positionne le personnage
         self.speed = PLAYER_SPEED  # Vitesse de déplacement
         self.screen_rect = pygame.Rect(0, 0, 800, 600)  # Limites par défaut de l'écran
 
@@ -18,14 +20,21 @@ class Player:
 
     # Gère les déplacements de l'écran en fonction des entrées
     def move(self, keys, screen_rect):
-        if keys[pygame.K_z] or keys[pygame.K_UP]:  # Haut
-            self.rect.y -= self.speed
-        if keys[pygame.K_s] or keys[pygame.K_DOWN]:  # Bas
-            self.rect.y += self.speed
-        if keys[pygame.K_q] or keys[pygame.K_LEFT]:  # Gauche
-            self.rect.x -= self.speed
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:  # Droite
-            self.rect.x += self.speed
+        UP_KEYS = keys[pygame.K_z] or keys[pygame.K_UP]
+        DOWN_KEYS = keys[pygame.K_s] or keys[pygame.K_DOWN]
+        RIGHT_KEYS = keys[pygame.K_d] or keys[pygame.K_RIGHT]
+        LEFT_KEYS = keys[pygame.K_q] or keys[pygame.K_LEFT]
+
+        dx = (RIGHT_KEYS - LEFT_KEYS) * self.speed
+        dy = (DOWN_KEYS - UP_KEYS) * self.speed
+        # Controler la vitesse diagonale 
+        if dx != 0 and dy != 0:
+            dx = dx * (math.sqrt(2)/2)
+            dy = dy * (math.sqrt(2)/2)
+        
+        # Appliquer le mouvement
+        self.rect.x += dx
+        self.rect.y += dy
 
         # Limite le joueur à l'intérieur de l'écran
         self.rect.clamp_ip(self.screen_rect)
