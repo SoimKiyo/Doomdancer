@@ -36,6 +36,18 @@ un degat de l'ennemie (Le system est assez rapide en soit pour perfect)
 
 - La monnaie c'est les âmes érantes
  
+  1. Armes de Mêlée + Projectiles Spirituels (Mode Alternatif)
+Concept :
+Le joueur attaque en mêlée, mais lorsqu'il réussit un perfect parry, il gagne une charge de projectile spirituel qu'il peut tirer ensuite.
+
+🔥 2. Ajout d’un Système de "Lien Spirituel"
+Plutôt que de faire des projectiles classiques, le joueur peut marquer un ennemi en mêlée et lui envoyer une attaque à distance après coup.
+
+Exemple de mécanique :
+
+Attaque mêlée : Pose une marque sur l’ennemi.
+Appuyer sur "Tir Spirituel" après un parry : La marque explose et fait des dégâts.
+Si la marque explose sur un ennemi, il peut aussi ralentir les balles alentour.
 
 
 Script :
@@ -135,7 +147,7 @@ Gestion des améliorations au respawn.
 Intégration des éléments de progression (âmes errantes).
 
 ### Développeur 2 (Mathias) : Programmation des niveaux et des ennemis
-## Tâches :
+## Tâches : qb
 
 Création des donjons et des labyrinthes.
 Programmation des comportements des ennemis.
