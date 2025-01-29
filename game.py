@@ -2,6 +2,7 @@ import pygame
 from player import Player, load_animations, scale_img
 from constants import *
 from weapon import Weapon
+from enemy import Enemy
 
 # Arme du joueur
 def soulorb_image():
@@ -24,6 +25,9 @@ class Game:
         self.mob_animations = load_animations()
         self.player = Player(screen_width // 2, screen_height // 2, PLAYER_WIDTH, PLAYER_HEIGHT, self.mob_animations, 0)
 
+        # Création d'un ennemi
+        self.enemy = Enemy(screen_width // 4, screen_height // 4, ENEMY_WIDTH, ENEMY_HEIGHT, ENEMY_HEALTH, self.mob_animations, 1)
+
         # Arme
         self.weapon = Weapon(soulorb_image(), self.joysticks)
 
@@ -41,12 +45,14 @@ class Game:
         screen_scroll = self.player.move(keys, self.screen_rect)
         self.player.update()
         self.weapon.update(self.player)
+        self.enemy.update()
 
     # Dessine et affiche les éléments du jeu
     def draw(self, screen):
         screen.fill(self.background_color)  # Dessine le fond
         self.player.draw(screen)  # Dessine le joueur
         self.weapon.draw(screen) # Dessine l'arme
+        self.enemy.draw(screen)  # Dessine l'ennemi à l'écran
 
     # Réinitialise le jeu
     def reset(self):

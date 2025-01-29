@@ -3,7 +3,6 @@ from menu import Menu
 from game import Game
 from player import joysticks
 from constants import *
-#from enemy import Enemy
 
 # Initialisation de Pygame
 pygame.init()
@@ -35,13 +34,6 @@ def update_screen_dimensions():
     menu.screen_height = SCREEN_HEIGHT
     game.update_screen_limits(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-#création de l'ennemie
-#enemy = Enemy(200, 100, 100, 10, 10)
-
-#création d'une liste d'ennemie vide
-#enemy_list = []
-#enemy_list.append(enemy)
-
 # Boucle principale
 while running:
     # Récupère les évènements pygame (Clavier/Souris/etc)
@@ -49,7 +41,7 @@ while running:
         # Ajout de la manette
         if event.type == pygame.JOYDEVICEADDED :
             joy = pygame.joystick.Joystick(event.device_index)
-        joysticks.append(joy)
+            joysticks.append(joy)
         # Si on ferme le jeu
         if event.type == pygame.QUIT:
             running = False
