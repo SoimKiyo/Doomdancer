@@ -23,35 +23,42 @@ class Player:
 
     # Gère les déplacements de l'écran en fonction des entrées
     def move(self, keys, screen_rect):
-        UP_KEYS = keys[pygame.K_z] or keys[pygame.K_UP]
-        DOWN_KEYS = keys[pygame.K_s] or keys[pygame.K_DOWN]
-        RIGHT_KEYS = keys[pygame.K_d] or keys[pygame.K_RIGHT]
-        LEFT_KEYS = keys[pygame.K_q] or keys[pygame.K_LEFT]
+        # Initialisation des valeur de déplacement dans les directions x et y
+        dx = 0
+        dy = 0
 
+        # Déplacement clavier
+        dx += (keys[pygame.K_d] or keys[pygame.K_RIGHT]) - (keys[pygame.K_q] or keys[pygame.K_LEFT])
+        dy += (keys[pygame.K_s] or keys[pygame.K_DOWN]) - (keys[pygame.K_z] or keys[pygame.K_UP])
+
+        # Déplacement via la manette (Joystick et D-Pad)
         for joystick in joysticks:
-            if joystick.get_button(14):
-                dx = self.speed
-            if joystick.get_button(13):
-                dx = -self.speed
-            if joystick.get_button(11):
-                dy = self.speed
-            if joystick.get_button(12):
-                dy = -self.speed
-            
-            horiz_move = joystick.get_axis(0)
-            vert_move = joystick.get.axis(1)
-            if abs(vert_move) > 0.05:
-                dy = vert_move * self.speed
-            if abs(horiz_move) > 0.05:
-                dx = horiz_move * self.speed
+            # Utilisation du joystick
+            if joystick.get_numaxes() >= 2:  # Vérifie si la manette a au moins 2 axes
+                horiz_move = joystick.get_axis(0)  # Axe X (gauche/droite)
+                vert_move = joystick.get_axis(1)  # Axe Y (haut/bas)
 
-        dx = (RIGHT_KEYS - LEFT_KEYS) * self.speed
-        dy = (DOWN_KEYS - UP_KEYS) * self.speed
-        # Controler la vitesse diagonale 
-        if dx != 0 and dy != 0:
-            dx = dx * (math.sqrt(2)/2)
-            dy = dy * (math.sqrt(2)/2)
-        
+                # Meilleur gestion de la sensibilité du joystick (angle mort à 0.15)
+                if abs(horiz_move) > 0.15: 
+                    dx += horiz_move
+                if abs(vert_move) > 0.15: 
+                    dy += vert_move
+
+            # Utilisation du D-Pad
+            if joystick.get_numhats() > 0:  # Vérifie si la manette a un D-Pad
+                hat_x, hat_y = joystick.get_hat(0)  # Récupère la direction du D-Pad
+                if hat_x != 0:
+                    dx = hat_x
+                if hat_y != 0:
+                    dy = -hat_y
+
+        # Normalisation de la vitesse (car sinon sa adittionne la vitesse des deux axes par exemple en cas de déplacement diagonale)
+        if dx or dy:
+            norm = math.sqrt(dx ** 2 + dy ** 2) #Calcule de la norme de la vitesse
+            # Ajustement des valeurs
+            dx = (dx / norm) * self.speed
+            dy = (dy / norm) * self.speed
+
         # Appliquer le mouvement
         self.rect.x += dx
         self.rect.y += dy

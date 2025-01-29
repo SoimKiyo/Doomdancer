@@ -2,7 +2,7 @@ import pygame
 from menu import Menu
 from game import Game
 from player import joysticks
-from enemy import Enemy
+#from enemy import Enemy
 
 # Initialisation des variables
 SCREEN_WIDTH = 800
@@ -40,11 +40,11 @@ def update_screen_dimensions():
     game.update_screen_limits(SCREEN_WIDTH, SCREEN_HEIGHT)
 
 #création de l'ennemie
-enemy = Enemy(200, 100, 100, 10, 10)
+#enemy = Enemy(200, 100, 100, 10, 10)
 
 #création d'une liste d'ennemie vide
-enemy_list = []
-enemy_list.append(enemy)
+#enemy_list = []
+#enemy_list.append(enemy)
 
 # Boucle principale
 while running:
@@ -78,8 +78,8 @@ while running:
             elif action == "quit":
                 running = False
         else:
-            # Gestion du jeu en cours (Si le joueur appuie sur echape il est enmené sur le menu pause)
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE: # Keydown est utilisé pour écouter que quand la touche est pressé et pas relâché
+            # Gestion du jeu en cours (Si le joueur appuie sur echape/start button il est enmené sur le menu pause)
+            if (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE) or (event.type == pygame.JOYBUTTONDOWN and event.button == 7): # Keydown est utilisé pour écouter que quand la touche est pressé et pas relâché
                 paused = True
 
     # Appliquer les paramètres d'écran si nécessaires

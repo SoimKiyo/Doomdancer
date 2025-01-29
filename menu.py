@@ -2,141 +2,143 @@ import pygame
 
 # Classe du menu
 class Menu:
-    # On initialise les options pour les menus en précisant les dimensions de la fenêtre
     def __init__(self, screen_width, screen_height):
+
         # Options du menu principal
-        self.main_menu_options = ["Jouer", "Paramètres", "Quitter"] #Options pour le menu au démarrage
-        self.pause_menu_options = ["Reprendre", "Paramètres", "Menu Principal"] #Options pour le menu pause
-        self.selected = 0  # Indice de l'option sélectionnée
-        self.is_pause_menu = False  # Le menu est t'il le menu de pause ?
+        self.main_menu_options = ["Jouer", "Paramètres", "Quitter"]
+        # Options du menu pause
+        self.pause_menu_options = ["Reprendre", "Paramètres", "Menu Principal"]
+        self.selected = 0 # Index de l'option sélectionnée
+        self.is_pause_menu = False # Le menu pause est t'il actif ?
+        self.in_settings = False # Le menu paramètres est t'il actif ?
 
-        # Gestions des sous menus
-        self.in_settings = False # Le menu est t'il le sous menu paramètres ?
-
-        # Options des paramètres
-        self.settings_options = ["Volume Musique", "Volume Effets", "Plein Écran", "Retour"] #Options pour le menu des paramètres
+        # Options du menu des paramètres
+        self.settings_options = ["Volume Musique", "Volume Effets", "Plein Écran", "Retour"]
         self.music_volume = 0.5
         self.sound_effects_volume = 0.7
         self.fullscreen = False
-        self.settings_selected = 0 # Indice de l'option sélectionnée
+        self.settings_selected = 0 # Index de l'option sélectionnée
 
         # Dimensions de l'écran
         self.screen_width = screen_width
         self.screen_height = screen_height
 
-    # Fonction pour afficher les menus (principal/pause/paramètres)
+    # Fonction pour afficher les menu
     def draw(self, screen, font_title, font_option):
-        # Si le menu est le menu pause
+        # Déterminer quel menu afficher (Pause, Paramètres, ou Principal)
         if self.is_pause_menu:
-            screen.fill((30, 30, 30))  # Fond gris sombre
-            title = font_title.render("PAUSE", True, (255, 215, 0))  # Or doré
-        # Si le menu est le menu paramètres
+            screen.fill((30, 30, 30)) # Fond gris foncé pour le menu pause
+            title = font_title.render("PAUSE", True, (255, 215, 0)) # Texte jaune
         elif self.in_settings:
-            screen.fill((20, 20, 50))  # Fond bleu foncé
-            title = font_title.render("PARAMÈTRES", True, (135, 206, 235))  # Bleu clair
-        # Si le menu est le menu principal
+            screen.fill((20, 20, 50)) # Fond bleu foncé pour les paramètres
+            title = font_title.render("PARAMÈTRES", True, (135, 206, 235)) # Texte bleu clair
         else:
-            screen.fill((10, 10, 20))  # Fond noir bleuté
-            title = font_title.render("DOOMDANCER", True, (255, 0, 0))  # Rouge vif
+            screen.fill((10, 10, 20)) # Fond noir pour le menu principal
+            title = font_title.render("DOOMDANCER", True, (255, 0, 0)) # Texte rouge
 
-        screen.blit(title, (self.screen_width // 2 - title.get_width() // 2, 80)) #Permet de centrer le titre horizontalement (Différence entre la largeur de l'écran et celle du texte)
+        # Affichage du titre centré en haut de l'écran
+        screen.blit(title, (self.screen_width // 2 - title.get_width() // 2, 80))
 
-        # Affichage des options selon le menu actif
+        # Affichage des options selon le menu actuel
         if self.in_settings:
-            # Pour chaque option dans les options des paramètres
             for i, option in enumerate(self.settings_options):
+                # Détermine la couleur de l'option sélectionnée
                 color = (255, 255, 255) if i == self.settings_selected else (150, 150, 150)
-                if option == "Volume Musique":
-                    option_text = f"{option} : {int(self.music_volume * 100)}%"
-                elif option == "Volume Effets":
-                    option_text = f"{option} : {int(self.sound_effects_volume * 100)}%"
-                elif option == "Plein Écran":
-                    option_text = f"{option} : {'Oui' if self.fullscreen else 'Non'}"
-                else:
-                    option_text = option
-
+                # Affiche la valeur des paramètres si besoins
+                option_text = f"{option} : {int(self.music_volume * 100)}%" if option == "Volume Musique" else \
+                              f"{option} : {int(self.sound_effects_volume * 100)}%" if option == "Volume Effets" else \
+                              f"{option} : {'Oui' if self.fullscreen else 'Non'}" if option == "Plein Écran" else option
                 text = font_option.render(option_text, True, color)
-                screen.blit(text, (self.screen_width // 2 - text.get_width() // 2, 200 + i * 50)) #Permet de centrer le texte horizontalement
+                screen.blit(text, (self.screen_width // 2 - text.get_width() // 2, 200 + i * 50))
         else:
-            # Sinon si c'est le menu principal ou le menu principal
+            # Déterminer les options à afficher (Menu principal ou menu pause)
             options = self.pause_menu_options if self.is_pause_menu else self.main_menu_options
             for i, option in enumerate(options):
                 color = (255, 255, 255) if i == self.selected else (150, 150, 150)
                 text = font_option.render(option, True, color)
-                screen.blit(text, (self.screen_width // 2 - text.get_width() // 2, 200 + i * 50)) #Permet de centrer le texte horizontalement
+                screen.blit(text, (self.screen_width // 2 - text.get_width() // 2, 200 + i * 50))
 
-    # Fonction pour gérer les entrées dans le menu
+    # Fonction pour gérer les entrées clavier/manette dans les menu
     def handle_input(self, event):
-        # Si les entrées sont des touches pressé
-        if event.type == pygame.KEYDOWN or event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYAXISMOTION:
-            # Si ce n'est pas le menu des paramètres
+        # Vérifie si un événement a était déclanché par une touche de clavier, un bouton de manette ou le D-Pad
+        if event.type in (pygame.KEYDOWN, pygame.JOYBUTTONDOWN, pygame.JOYHATMOTION):
+            # Récupère la touche du clavier si l'événement concerne le clavier, sinon None
+            key = getattr(event, 'key', None)
+            # Récupère le bouton de la manette si l'événement concerne la manette, sinon None
+            button = getattr(event, 'button', None)
+            # Récupère la direction du D-Pad si l'événement concerne la croix directionnelle, sinon (0, 0)
+            hat_value = getattr(event, 'value', (0, 0))
+
+            # Si on n'est pas dans le menu des paramètres
             if not self.in_settings:
-                # Navigation dans le menu principal ou pause
-                if event.key == pygame.K_UP:
-                    self.selected = (self.selected - 1) % (len(self.pause_menu_options) if self.is_pause_menu else len(self.main_menu_options)) # Permet de sélectionner l'élement du haut
-                elif event.key == pygame.K_DOWN:
-                    self.selected = (self.selected + 1) % (len(self.pause_menu_options) if self.is_pause_menu else len(self.main_menu_options)) # Permet de sélectionner l'élément du bas
-                elif event.key == pygame.K_RETURN or (pygame.JOYBUTTONDOWN and event.button == 0): # Permet de gérer l'action quand on presse la touche entrée (# Bouton A)
-                    # Si c'est le menu pause
-                    if self.is_pause_menu:
-                        return self.handle_pause_selection()
-                    # Si c'est le menu principal
-                    else:
-                        return self.handle_main_menu_selection()
-            
-            # Si c'est le menu des paramètres
+                # Aller vers le haut (flèche haut, Z, ou D-Pad haut)
+                if key in (pygame.K_UP, pygame.K_w) or hat_value[1] == 1:
+                    self.selected = (self.selected - 1) % (len(self.pause_menu_options) if self.is_pause_menu else len(self.main_menu_options))
+                # Aller vers le bas (flèche bas, S, ou D-Pad bas)
+                elif key in (pygame.K_DOWN, pygame.K_s) or hat_value[1] == -1:
+                    self.selected = (self.selected + 1) % (len(self.pause_menu_options) if self.is_pause_menu else len(self.main_menu_options))
+                # Valider (Touche Entrée ou bouton A de la manette)
+                elif key == pygame.K_RETURN or button == 0:
+                    return self.handle_pause_selection() if self.is_pause_menu else self.handle_main_menu_selection()
+                # Retour (Echape ou bouton B de la manette)
+                elif key == pygame.K_ESCAPE or button == 1:
+                    self.in_settings = False
+            # Sinon, si on est dans le menu des paramètres
             else:
-                # Navigation dans les paramètres
-                if event.key == pygame.K_UP:
-                    self.settings_selected = (self.settings_selected - 1) % len(self.settings_options) # Permet de sélectionner l'élement du haut
-                elif event.key == pygame.K_DOWN:
-                    self.settings_selected = (self.settings_selected + 1) % len(self.settings_options) # Permet de sélectionner l'élément du bas
-                elif event.key == pygame.K_RIGHT: # Permet de changer la valeur de l'élément sélectionné vers des valeur plus grande
-                    #Si c'est le premier élément c'est à dire le volume
-                    if self.settings_selected == 0:
-                        self.music_volume = min(1.0, self.music_volume + 0.1) #Augmente
-                    #Si c'est les effets sonnores
-                    elif self.settings_selected == 1:
-                        self.sound_effects_volume = min(1.0, self.sound_effects_volume + 0.1) #Augmente
-                    # Si c'est le plein écran
-                    elif self.settings_selected == 2:
-                        self.fullscreen = True #Active
-                elif event.key == pygame.K_LEFT: # Permet de changer la valeur de l'élément sélectionné vers des valeur plus basse
-                    if self.settings_selected == 0:
-                        self.music_volume = max(0.0, self.music_volume - 0.1) #Diminue
-                    elif self.settings_selected == 1:
-                        self.sound_effects_volume = max(0.0, self.sound_effects_volume - 0.1) #Diminue
-                    elif self.settings_selected == 2:
-                        self.fullscreen = False #Désactive
-                elif event.key == pygame.K_RETURN: # Si on appuie sur la touche entrée
-                    if self.settings_selected == 3:  # Retourne en arrière
+                # Aller vers le haut (flèche haut, Z, ou D-Pad haut)
+                if key in (pygame.K_UP, pygame.K_w) or hat_value[1] == 1:
+                    self.settings_selected = (self.settings_selected - 1) % len(self.settings_options)
+                # Aller vers le bas (flèche bas, S, ou D-Pad bas)
+                elif key in (pygame.K_DOWN, pygame.K_s) or hat_value[1] == -1:
+                    self.settings_selected = (self.settings_selected + 1) % len(self.settings_options)
+                # Augmenter une valeur (flèche droite, D-Pad droit)
+                elif key in (pygame.K_RIGHT, pygame.K_d) or hat_value[0] == 1:
+                    if self.settings_selected == 0: # Musique
+                        self.music_volume = min(1.0, self.music_volume + 0.1)
+                    elif self.settings_selected == 1: # Effets sonores
+                        self.sound_effects_volume = min(1.0, self.sound_effects_volume + 0.1)
+                    elif self.settings_selected == 2: # Plein écrans
+                        self.fullscreen = True
+                # Descendre une valeur (flèche gauche, D-Pad gauche)
+                elif key in (pygame.K_LEFT,  pygame.K_q) or hat_value[0] == -1:
+                    if self.settings_selected == 0: # Musique
+                        self.music_volume = max(0.0, self.music_volume - 0.1)
+                    elif self.settings_selected == 1: # Effets sonores
+                        self.sound_effects_volume = max(0.0, self.sound_effects_volume - 0.1)
+                    elif self.settings_selected == 2: # Plein écrans
+                        self.fullscreen = False
+                # Valider (Touche Entrée ou bouton A de la manette)
+                elif key == pygame.K_RETURN or button == 0:
+                    if self.settings_selected == 3: # Retour au menu précédent
                         self.in_settings = False
+                # Retour (Echape ou bouton B de la manette)
+                elif key == pygame.K_ESCAPE or button == 1:
+                    self.in_settings = False
+
+        # Retourne None par défaut (aucune action déclenchée)
         return None
 
-    # Fonctions pour gérer les sélections dans le menu principal
+
+    # Fonction pour gérer la sélection d'une option dans le menu principal
     def handle_main_menu_selection(self):
-        if self.selected == 0:  # Jouer
+        if self.selected == 0:
             return "play"
-        elif self.selected == 1:  # Paramètres
+        elif self.selected == 1:
             self.in_settings = True
             self.settings_selected = 0
-        elif self.selected == 2:  # Quitter
+        elif self.selected == 2:
             return "quit"
 
-    # Fonctions pour gérer les sélections dans le menu pause
+    # Fonction pour gérer la sélection d'une option dans le menu pause
     def handle_pause_selection(self):
-        if self.selected == 0:  # Reprendre
+        if self.selected == 0:
             return "resume"
-        elif self.selected == 1:  # Paramètres
+        elif self.selected == 1:
             self.in_settings = True
             self.settings_selected = 0
-        elif self.selected == 2:  # Menu Principal
+        elif self.selected == 2:
             return "menu"
 
-    # Fonctions pour appliquer les paramètres (ici le plein éran)
+    # Fonction pour appliquer les paramètres (ici le plein écran)
     def apply_settings(self, screen):
-        if self.fullscreen:
-            return pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        else:
-            # Remettre à la taille par défaut
-            return pygame.display.set_mode((800, 600))
+        return pygame.display.set_mode((0, 0), pygame.FULLSCREEN) if self.fullscreen else pygame.display.set_mode((800, 600))
