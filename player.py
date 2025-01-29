@@ -5,6 +5,9 @@ import math
 PLAYER_SPEED = 5
 PLAYER_COLOR = (0, 128, 255)
 
+joysticks = [] # Liste vide pour stocker les manettes
+
+
 # Classe du joueur
 class Player:
     # Initialise le joueur et ses valeurs
@@ -24,6 +27,23 @@ class Player:
         DOWN_KEYS = keys[pygame.K_s] or keys[pygame.K_DOWN]
         RIGHT_KEYS = keys[pygame.K_d] or keys[pygame.K_RIGHT]
         LEFT_KEYS = keys[pygame.K_q] or keys[pygame.K_LEFT]
+
+        for joystick in joysticks:
+            if joystick.get_button(14):
+                dx = self.speed
+            if joystick.get_button(13):
+                dx = -self.speed
+            if joystick.get_button(11):
+                dy = self.speed
+            if joystick.get_button(12):
+                dy = -self.speed
+            
+            horiz_move = joystick.get_axis(0)
+            vert_move = joystick.get.axis(1)
+            if abs(vert_move) > 0.05:
+                dy = vert_move * self.speed
+            if abs(horiz_move) > 0.05:
+                dx = horiz_move * self.speed
 
         dx = (RIGHT_KEYS - LEFT_KEYS) * self.speed
         dy = (DOWN_KEYS - UP_KEYS) * self.speed

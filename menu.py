@@ -68,7 +68,7 @@ class Menu:
     # Fonction pour gérer les entrées dans le menu
     def handle_input(self, event):
         # Si les entrées sont des touches pressé
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN or event.type == pygame.JOYBUTTONDOWN or event.type == pygame.JOYAXISMOTION:
             # Si ce n'est pas le menu des paramètres
             if not self.in_settings:
                 # Navigation dans le menu principal ou pause
@@ -76,7 +76,7 @@ class Menu:
                     self.selected = (self.selected - 1) % (len(self.pause_menu_options) if self.is_pause_menu else len(self.main_menu_options)) # Permet de sélectionner l'élement du haut
                 elif event.key == pygame.K_DOWN:
                     self.selected = (self.selected + 1) % (len(self.pause_menu_options) if self.is_pause_menu else len(self.main_menu_options)) # Permet de sélectionner l'élément du bas
-                elif event.key == pygame.K_RETURN: # Permet de gérer l'action quand on presse la touche entrée
+                elif event.key == pygame.K_RETURN or (pygame.JOYBUTTONDOWN and event.button == 0): # Permet de gérer l'action quand on presse la touche entrée (# Bouton A)
                     # Si c'est le menu pause
                     if self.is_pause_menu:
                         return self.handle_pause_selection()

@@ -1,6 +1,8 @@
 import pygame
 from menu import Menu
 from game import Game
+from player import joysticks
+from enemy import Enemy
 
 # Initialisation des variables
 SCREEN_WIDTH = 800
@@ -14,6 +16,7 @@ pygame.display.set_caption("Doomdancer") # Titre du jeu
 clock = pygame.time.Clock() # FramesRate
 font_title = pygame.font.Font(None, 80)  # Police pour les titres
 font_option = pygame.font.Font(None, 36)  # Police pour les options
+pygame.joystick.init() # Initialiser les manettes
 
 # Création de l'instance du menu
 menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -36,14 +39,25 @@ def update_screen_dimensions():
     menu.screen_height = SCREEN_HEIGHT
     game.update_screen_limits(SCREEN_WIDTH, SCREEN_HEIGHT)
 
+#création de l'ennemie
+enemy = Enemy(200, 100, 100, 10, 10)
+
+#création d'une liste d'ennemie vide
+enemy_list = []
+enemy_list.append(enemy)
+
 # Boucle principale
 while running:
     # Récupère les évènements pygame (Clavier/Souris/etc)
     for event in pygame.event.get():
+        # Ajout de la manette
+        if event.type == pygame.JOYDEVICEADDED :
+            joy = pygame.joystick.Joystick(event.device_index)
+        joysticks.append(joy)
         # Si on ferme le jeu
         if event.type == pygame.QUIT:
             running = False
-
+        
         # Si le jeu n'est pas fermé et que on n'est pas dans une partie
         if not in_game:
             # Gestion du menu principal et de ses entrées
