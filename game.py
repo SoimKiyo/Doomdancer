@@ -1,9 +1,6 @@
 import pygame
-from player import Player
-
-# Constantes pour la zone de jeu
-PLAYER_WIDTH = 50
-PLAYER_HEIGHT = 50
+from player import Player, load_animations 
+from constants import *
 
 # Classe du jeu
 class Game:
@@ -16,7 +13,8 @@ class Game:
         self.screen_rect = pygame.Rect(0, 0, screen_width, screen_height)
 
         # Création du joueur
-        self.player = Player(screen_width // 2, screen_height // 2, PLAYER_WIDTH, PLAYER_HEIGHT)
+        self.animation_list = load_animations()
+        self.player = Player(screen_width // 2, screen_height // 2, PLAYER_WIDTH, PLAYER_HEIGHT, self.animation_list)
 
         # Couleurs du décor
         self.background_color = (20, 20, 20)
@@ -29,7 +27,8 @@ class Game:
 
     # Met a jour les éléments du jeu (comme le joueur)
     def update(self, keys):
-        self.player.move(keys, self.screen_rect)
+        screen_scroll = self.player.move(keys, self.screen_rect)
+        self.player.update()
 
     # Dessine et affiche les éléments du jeu
     def draw(self, screen):

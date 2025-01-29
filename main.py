@@ -2,12 +2,8 @@ import pygame
 from menu import Menu
 from game import Game
 from player import joysticks
+from constants import *
 #from enemy import Enemy
-
-# Initialisation des variables
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-FPS = 60
 
 # Initialisation de Pygame
 pygame.init()

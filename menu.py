@@ -3,7 +3,7 @@ import pygame
 # Classe du menu
 class Menu:
     def __init__(self, screen_width, screen_height):
-
+        
         # Options du menu principal
         self.main_menu_options = ["Jouer", "Paramètres", "Quitter"]
         # Options du menu pause
