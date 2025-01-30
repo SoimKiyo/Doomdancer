@@ -1,15 +1,9 @@
 import pygame
-import math
 from constants import *
-
-# Fonction pour mettre à jour la taille de l'ennemie
-def scale_img(image,scale):
-    w = image.get_width()
-    h = image.get_height()
-    return pygame.transform.scale(image, (w * scale, h * scale))
+from player import scale_img
 
 # Fonction pour charger les animations
-def load_animations():
+def enemy_animations():
     mob_animations = []
     mob_types = ["player", "mob"]
 
@@ -46,6 +40,7 @@ class Enemy:
         self.screen_rect = pygame.Rect(0, 0, 800, 600)  # Limites par défaut de l'écran
 
         self.health = health
+        self.alive = True
 
     #fonction pour faire des dégats à l'ennemie
     def take_damage(self, health, damage):
@@ -59,6 +54,10 @@ class Enemy:
 
     # Fonction pour gérer l'animation
     def update(self):
+        # check if character has died
+        if self.health <= 0:
+            self.health = 0
+            self.alive = False
         animation_cooldown = 350
 
         # Vérifier si l'ennemi court ou est inactif

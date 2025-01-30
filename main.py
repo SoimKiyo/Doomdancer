@@ -15,7 +15,7 @@ pygame.joystick.init() # Initialiser les manettes
 
 # Création de l'instance du menu
 menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
-game = Game(SCREEN_WIDTH, SCREEN_HEIGHT, joysticks)
+game = Game(SCREEN_WIDTH, SCREEN_HEIGHT, joysticks, screen)
 
 # Variables d'état
 running = True # Le jeu est il actif ?

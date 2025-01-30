@@ -11,32 +11,26 @@ def scale_img(image,scale):
     return pygame.transform.scale(image, (w * scale, h * scale))
 
 # Fonction pour charger les animations
-def load_animations():
-    mob_animations = []
-    mob_types = ["player", "mob"]
-
+def player_animations():
     animation_frames = { # Dictionnaire contenant les types d'animations et leur nombre de frames
         "idle": 2,
         "run": 8 
     }
-    for mob in mob_types:
-        animation_list = {key: [] for key in animation_frames}  # Dictionnaire pour stocker les animations
-        for animation, num_frames in animation_frames.items():
-            for i in range(num_frames):  # Charger chaque sprite
-                img = pygame.image.load(f"assets/images/{mob}/{animation}/{i}.png").convert_alpha() # Charger l'image
-                img = scale_img(img, SCALE)  # Redimensionner
-                animation_list[animation].append(img)  # Ajouter à la liste
-        mob_animations.append(animation_list)
-    return mob_animations
+    animation_list = {key: [] for key in animation_frames}  # Dictionnaire pour stocker les animations
+    for animation, num_frames in animation_frames.items():
+        for i in range(num_frames):  # Charger chaque sprite
+            img = pygame.image.load(f"assets/images/player/{animation}/{i}.png").convert_alpha() # Charger l'image
+            img = scale_img(img, SCALE)  # Redimensionner
+            animation_list[animation].append(img)  # Ajouter à la liste
+    return animation_list
 
 # Classe du joueur
 class Player:
     # Initialise le joueur et ses valeurs
-    def __init__(self, x, y, width, height, mob_animations, char_type):
+    def __init__(self, x, y, width, height, animation_list):
         # Animation/Sprite du personnage
-        self.char_type = char_type
         self.flip = False # Permet de tourner l'image du joueur
-        self.animation_list = mob_animations[char_type]
+        self.animation_list = animation_list
         self.frame_index = 0 # Première frame de l'animation
         self.action = "idle"
         self.update_time = pygame.time.get_ticks() # Le nombre de ticks pour mettre à jour l'animation
@@ -152,8 +146,5 @@ class Player:
     # Dessine et affiche le joueur
     def draw(self, surface):
         flipped_image = pygame.transform.flip(self.image, self.flip, False)
-        if self.char_type == 0:
-            surface.blit(flipped_image, (self.rect.x - SCALE * OFFSET_X, self.rect.y - SCALE * OFFSET_Y))
-        else: 
-            surface.blit(flipped_image, self.rect)
+        surface.blit(flipped_image, (self.rect.x - SCALE * OFFSET_X, self.rect.y - SCALE * OFFSET_Y))
         pygame.draw.rect(surface, PLAYER_COLOR, self.rect, 1)
