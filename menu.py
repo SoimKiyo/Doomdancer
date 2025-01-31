@@ -13,10 +13,10 @@ class Menu:
         self.in_settings = False # Le menu paramètres est t'il actif ?
 
         # Options du menu des paramètres
-        self.settings_options = ["Volume Musique", "Volume Effets", "Plein Écran", "Retour"]
+        self.settings_options = ["Volume Musique", "Volume Effets", "Retour"]
         self.music_volume = 0.5
         self.sound_effects_volume = 0.7
-        self.fullscreen = False
+        #self.fullscreen = False
         self.settings_selected = 0 # Index de l'option sélectionnée
 
         # Dimensions de l'écran
@@ -46,8 +46,8 @@ class Menu:
                 color = (255, 255, 255) if i == self.settings_selected else (150, 150, 150)
                 # Affiche la valeur des paramètres si besoins
                 option_text = f"{option} : {int(self.music_volume * 100)}%" if option == "Volume Musique" else \
-                              f"{option} : {int(self.sound_effects_volume * 100)}%" if option == "Volume Effets" else \
-                              f"{option} : {'Oui' if self.fullscreen else 'Non'}" if option == "Plein Écran" else option
+                              f"{option} : {int(self.sound_effects_volume * 100)}%" if option == "Volume Effets" else option
+                              #f"{option} : {'Oui' if self.fullscreen else 'Non'}" if option == "Plein Écran" else option
                 text = font_option.render(option_text, True, color)
                 screen.blit(text, (self.screen_width // 2 - text.get_width() // 2, 200 + i * 50))
         else:
@@ -97,16 +97,16 @@ class Menu:
                         self.music_volume = min(1.0, self.music_volume + 0.1)
                     elif self.settings_selected == 1: # Effets sonores
                         self.sound_effects_volume = min(1.0, self.sound_effects_volume + 0.1)
-                    elif self.settings_selected == 2: # Plein écrans
-                        self.fullscreen = True
+                    #elif self.settings_selected == 2: # Plein écrans
+                    #    self.fullscreen = True
                 # Descendre une valeur (flèche gauche, D-Pad gauche)
                 elif key in (pygame.K_LEFT,  pygame.K_q) or hat_value[0] == -1:
                     if self.settings_selected == 0: # Musique
                         self.music_volume = max(0.0, self.music_volume - 0.1)
                     elif self.settings_selected == 1: # Effets sonores
                         self.sound_effects_volume = max(0.0, self.sound_effects_volume - 0.1)
-                    elif self.settings_selected == 2: # Plein écrans
-                        self.fullscreen = False
+                    #elif self.settings_selected == 2: # Plein écrans
+                    #    self.fullscreen = False
                 # Valider (Touche Entrée ou bouton A de la manette)
                 elif key == pygame.K_RETURN or button == 0:
                     if self.settings_selected == 3: # Retour au menu précédent
@@ -140,5 +140,5 @@ class Menu:
             return "menu"
 
     # Fonction pour appliquer les paramètres (ici le plein écran)
-    def apply_settings(self, screen):
-        return pygame.display.set_mode((0, 0), pygame.FULLSCREEN) if self.fullscreen else pygame.display.set_mode((800, 600))
+    #def apply_settings(self, screen):
+    #    return pygame.display.set_mode((0, 0), pygame.FULLSCREEN) if self.fullscreen else pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

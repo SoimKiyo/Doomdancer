@@ -3,6 +3,7 @@ from menu import Menu
 from game import Game
 from player import joysticks
 from constants import *
+from map import map_sprites
 
 # Initialisation de Pygame
 pygame.init()
@@ -12,6 +13,9 @@ clock = pygame.time.Clock() # FramesRate
 font_title = pygame.font.Font(None, 80)  # Police pour les titres
 font_option = pygame.font.Font(None, 36)  # Police pour les options
 pygame.joystick.init() # Initialiser les manettes
+
+# Chargement des tiles de la map
+map_sprites()
 
 # Création de l'instance du menu
 menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -23,8 +27,8 @@ in_game = False # Le joueur est il entrain de jouer ?
 paused = False # Le jeu est en pause ?
 
 # Variables pour appliquer les paramètres
-current_fullscreen = False
-current_resolution = (SCREEN_WIDTH, SCREEN_HEIGHT)
+#current_fullscreen = False
+#current_resolution = (SCREEN_WIDTH, SCREEN_HEIGHT)
 
 # Fonction pour mettre à jour les dimensions de l'écran
 def update_screen_dimensions():
@@ -71,10 +75,10 @@ while running:
                 paused = True
 
     # Appliquer les paramètres d'écran si nécessaires
-    if current_fullscreen != menu.fullscreen:
-        screen = menu.apply_settings(screen) #Modifie le mode d'affichage
-        current_fullscreen = menu.fullscreen
-        update_screen_dimensions() # Met a jour les dimensions
+    #if current_fullscreen != menu.fullscreen:
+        #screen = menu.apply_settings(screen) #Modifie le mode d'affichage
+        #current_fullscreen = menu.fullscreen
+        #update_screen_dimensions() # Met a jour les dimensions
 
     # Affichage (On dessine le menu principal)
     if not in_game or paused:

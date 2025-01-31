@@ -1,21 +1,28 @@
 import pygame
+import csv
 from constants import *
 
 # Charger les tiles de la map
 tile_list = []
-for x in range(TILE_TYPES):
-    tile_image = pygame.image.load(f"assets/images/tiles/{x}.png").convert_alpha()
-    tile_image = pygame.transform.scale(tile_image, (TILE_SIZE, TILE_SIZE))
-    tile_list.append(tile_image)
+def map_sprites():
+    for x in range(TILE_TYPES):
+        tile_image = pygame.image.load(f"assets/images/tiles/{x}.png").convert_alpha()
+        tile_image = pygame.transform.scale(tile_image, (TILE_SIZE, TILE_SIZE))
+        tile_list.append(tile_image)
 
-world_data = [
-[7,7,7,7,7,7],
-[7,7,7,7,7,7],
-[7,7,7,7,7,7],
-[7,7,7,7,7,7],
-[7,7,7,7,7,7],
-[7,7,7,7,7,7],
-]
+# Variable du niveau à charger
+level = 1
+
+# Données de la map
+world_data = []
+for row in range(ROWS):
+    r= [-1]*COLS
+    world_data.append(r)
+with open(f"levels/level{level}_data.csv", newline="") as csvfile:
+    reader = csv.reader(csvfile, delimiter=",")
+    for x, row in enumerate(reader):
+        for y, tile in enumerate(row):
+            world_data[x][y] = int(tile)
 
 class World():
     def __init__(self):

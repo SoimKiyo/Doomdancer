@@ -45,8 +45,9 @@ class Game:
         self.weapon = Weapon(weapon_images("soulorb"), self.joysticks, weapon_images("projectile"))
 
         # Couleurs du décor
-        self.background_color = (20, 20, 20)
+        self.background_color = BLACK
         self.world = World()
+        self.world.process_data(world_data, tile_list)
 
     # Met a jour la taille de l'écran
     def update_screen_limits(self, screen_width, screen_height):
@@ -83,6 +84,9 @@ class Game:
     def draw(self, screen):
         screen.fill(self.background_color)  # Dessine le fond
 
+        # Map
+        self.world.draw(screen)
+
         # Joueur
         self.player.draw(screen)  # Dessine le joueur
 
@@ -98,10 +102,6 @@ class Game:
         for projectile in projectile_group: # Dessine les flèches
             projectile.draw(screen)
         damage_text_group.draw(screen)
-
-        # Map
-        self.world.process_data(world_data, tile_list)
-        self.world.draw(screen)
 
     # Réinitialise le jeu
     def reset(self):

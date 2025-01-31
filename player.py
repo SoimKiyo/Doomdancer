@@ -40,7 +40,7 @@ class Player:
         self.rect = pygame.Rect(x, y, width, height)  # Rectangle du joueur
         self.rect.center = (x,y) # Positionne le personnage
         self.speed = PLAYER_SPEED  # Vitesse de déplacement
-        self.screen_rect = pygame.Rect(0, 0, 800, 600)  # Limites par défaut de l'écran
+        self.screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)  # Limites par défaut de l'écran
 
     # Permet de mettre à jour les limite de la taille de l'écran
     def update_screen_limits(self, screen_width, screen_height):
