@@ -8,7 +8,7 @@ joysticks = [] # Liste vide pour stocker les manettes
 def scale_img(image,scale):
     w = image.get_width()
     h = image.get_height()
-    return pygame.transform.scale(image, (w * scale, h * scale))
+    return pygame.transform.scale(image, (int(w * scale), int(h * scale)))
 
 # Fonction pour charger les animations
 def player_animations():
