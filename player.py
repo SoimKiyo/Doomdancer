@@ -102,12 +102,21 @@ class Player:
 
         ## Logique applicable qu'au joueur
         # Mettre à jour le défilement de l'écran en fonction de la position du joueur
+        # Gauche/Droite
         if self.rect.right > (SCREEN_WIDTH - SCROLL_THRESH):
             screen_scroll[0] = (SCREEN_WIDTH - SCROLL_THRESH) - self.rect.right
             self.rect.right = SCREEN_WIDTH - SCROLL_THRESH
         if self.rect.left < SCROLL_THRESH:
             screen_scroll[0] = SCROLL_THRESH - self.rect.left
             self.rect.left = SCROLL_THRESH
+        
+        # Haut/Bas
+        if self.rect.bottom > (SCREEN_HEIGHT - SCROLL_THRESH):
+            screen_scroll[1] = (SCREEN_HEIGHT - SCROLL_THRESH) - self.rect.bottom
+            self.rect.bottom = SCREEN_HEIGHT - SCROLL_THRESH
+        if self.rect.top < SCROLL_THRESH:
+            screen_scroll[1] = SCROLL_THRESH - self.rect.top
+            self.rect.top = SCROLL_THRESH
 
         return screen_scroll
 

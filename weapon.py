@@ -75,13 +75,13 @@ class Projectile(pygame.sprite.Sprite):
         self.dx = math.cos(math.radians(self.angle)) * PROJECTILE_SPEED
         self.dy = math.sin(math.radians(self.angle)) * PROJECTILE_SPEED
 
-    def update(self, enemy_list):
+    def update(self, screen_scroll, enemy_list):
         damage = 0
         damage_pos = None
 
         # Repositionner par rapport à la vitesse
-        self.rect.x += self.dx
-        self.rect.y += self.dy
+        self.rect.x += screen_scroll[0] + self.dx
+        self.rect.y += screen_scroll[1] + self.dy
 
         # Vérifier que les projectiles soit hors de l'écran
         if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH or self.rect.bottom < 0 or self.rect.top > SCREEN_HEIGHT:

@@ -20,5 +20,8 @@ ENEMY_HEALTH = 100
 
 SCROLL_THRESH = 200
 screen_scroll = [0,0]
+TILE_SIZE = 16 * SCALE
+TILE_TYPES = 18
 
 RED = (255, 0, 0)
+WHITE = (255, 255, 255)

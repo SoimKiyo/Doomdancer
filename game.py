@@ -4,6 +4,7 @@ from constants import *
 from weapon import Weapon
 from enemy import Enemy, enemy_animations
 from ui import DamageText
+from map import World, world_data, tile_list
 
 # Arme du joueur
 def weapon_images(element):
@@ -32,7 +33,7 @@ class Game:
 
         # Création du joueur
         self.player_animations = player_animations()
-        self.player = Player(screen_width // 2, screen_height // 2, PLAYER_WIDTH, PLAYER_HEIGHT, self.player_animations)
+        self.player = Player(screen_width // 2, screen_height // 2, TILE_SIZE, TILE_SIZE, self.player_animations)
 
         # Création d'un ennemi
         self.mob_animations = enemy_animations()
@@ -45,6 +46,7 @@ class Game:
 
         # Couleurs du décor
         self.background_color = (20, 20, 20)
+        self.world = World()
 
     # Met a jour la taille de l'écran
     def update_screen_limits(self, screen_width, screen_height):
@@ -54,30 +56,52 @@ class Game:
 
     # Met a jour les éléments du jeu (comme le joueur)
     def update(self, keys):
+        # Screen scroll
         screen_scroll = self.player.move(keys, self.screen_rect)
+        self.world.update(screen_scroll)
+
+        # Joueur
         self.player.update()
+
+        # Projectile
         projectile = self.weapon.update(self.player)
         if projectile:
             projectile_group.add(projectile)
+        # Texte de dégats
         for projectile in projectile_group:
-            damage, damage_pos = projectile.update(self.enemy_list)
+            damage, damage_pos = projectile.update(screen_scroll, self.enemy_list)
             if damage:
-                damage_text = DamageText(damage_pos.centerx, damage_pos.y, str(damage), RED)
+                damage_text = DamageText(damage_pos.centerx, damage_pos.y, str(damage), RED, screen_scroll)
                 damage_text_group.add(damage_text)
         damage_text_group.update()
+
+        # Enemies
         for enemy in self.enemy_list:
             enemy.update()
 
     # Dessine et affiche les éléments du jeu
     def draw(self, screen):
         screen.fill(self.background_color)  # Dessine le fond
+
+        # Joueur
         self.player.draw(screen)  # Dessine le joueur
+
+        # Arme
         self.weapon.draw(screen) # Dessine l'arme
+
+        # Enemie
         for enemy in self.enemy_list: # Dessine l'ennemi à l'écran
+            enemy.ai(screen_scroll)
             enemy.draw(screen)
+        
+        # Projectile
         for projectile in projectile_group: # Dessine les flèches
             projectile.draw(screen)
         damage_text_group.draw(screen)
+
+        # Map
+        self.world.process_data(world_data, tile_list)
+        self.world.draw(screen)
 
     # Réinitialise le jeu
     def reset(self):

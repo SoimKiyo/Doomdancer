@@ -51,7 +51,11 @@ class Enemy:
         if self.health <= 0:
             self.rect.x = 10000
 
-
+    def ai(self, screen_scroll):
+        # Repositionner un ennemie par rapport au scroll
+        self.rect.x += screen_scroll[0]
+        self.rect.y += screen_scroll[1]
+        
     # Fonction pour gérer l'animation
     def update(self):
         # check if character has died
