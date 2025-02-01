@@ -3,6 +3,9 @@ import csv
 from constants import *
 
 # Charger les tiles de la map
+# 0 Sol, 1 Variation du sol, 2 Variation du sol, 3 Sol (Bordure pour le bas), 4 Sol (Bordure pour le haut), 5 Sol (Bordure pour la droite), 6 Sol (Bordure pour la gauche)
+# 7 Mur, 8 Variation du mur, 9 Mur pour la droite, 10 Mur pour la gauche
+# 11 Bas du pilier, 12 Milieu du pilier, 13 Haut du pilier
 tile_list = []
 def map_sprites():
     for x in range(TILE_TYPES):
@@ -11,7 +14,7 @@ def map_sprites():
         tile_list.append(tile_image)
 
 # Variable du niveau à charger
-level = 1
+level = 0
 
 # Données de la map
 world_data = []
