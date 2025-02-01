@@ -28,6 +28,8 @@ class Game:
 
         self.joysticks = joysticks
 
+        self.screen_scroll = screen_scroll
+
         # Zone jouable (limites de l'écran)
         self.screen_rect = pygame.Rect(0, 0, screen_width, screen_height)
 
@@ -58,6 +60,7 @@ class Game:
     # Met a jour les éléments du jeu (comme le joueur)
     def update(self, keys):
         # Screen scroll
+        self.screen_scroll = self.player.move(keys, self.screen_rect)
         screen_scroll = self.player.move(keys, self.screen_rect)
         self.world.update(screen_scroll)
 
@@ -95,7 +98,7 @@ class Game:
 
         # Enemie
         for enemy in self.enemy_list: # Dessine l'ennemi à l'écran
-            enemy.ai(screen_scroll)
+            enemy.ai(self.screen_scroll)
             enemy.draw(screen)
         
         # Projectile
