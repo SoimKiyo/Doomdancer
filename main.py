@@ -26,6 +26,7 @@ running = True # Le jeu est il actif ?
 in_game = False # Le joueur est il entrain de jouer ?
 paused = False # Le jeu est en pause ?
 
+
 # Variables pour appliquer les paramètres
 #current_fullscreen = False
 #current_resolution = (SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -53,6 +54,7 @@ while running:
         # Si le jeu n'est pas fermé et que on n'est pas dans une partie
         if not in_game:
             # Gestion du menu principal et de ses entrées
+            pygame.event.set_grab(False)
             action = menu.handle_input(event)
             if action == "play":
                 in_game = True
@@ -61,6 +63,7 @@ while running:
                 running = False
         elif paused:
             # Gestion du menu pause
+            pygame.event.set_grab(False)
             action = menu.handle_input(event)
             if action == "resume":
                 paused = False
@@ -82,10 +85,12 @@ while running:
 
     # Affichage (On dessine le menu principal)
     if not in_game or paused:
+        pygame.event.set_grab(False)
         menu.is_pause_menu = paused
         menu.draw(screen, font_title, font_option)
     # Sinon on est en jeu
     else:
+        pygame.event.set_grab(True)
         # Appeler les mises à jour et le rendu du jeu
         keys = pygame.key.get_pressed()
         game.update(keys)  # Met à jour le joueur

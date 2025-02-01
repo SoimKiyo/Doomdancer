@@ -9,8 +9,8 @@ from map import World, world_data, tile_list
 # Arme du joueur
 def weapon_images(element):
     toreturn = 0
-    if element == "soulorb":
-        toreturn = scale_img(pygame.image.load("assets/images/weapons/soulorb.png").convert_alpha(), WEAPON_SCALE)
+    if element == "basicgun":
+        toreturn = scale_img(pygame.image.load("assets/images/weapons/basicgun.png").convert_alpha(), WEAPON_SCALE)
     else:
         toreturn = scale_img(pygame.image.load("assets/images/weapons/projectile.png").convert_alpha(), WEAPON_SCALE)
     return toreturn
@@ -45,7 +45,7 @@ class Game:
         self.enemy_list.append(self.enemy)
 
         # Arme
-        self.weapon = Weapon(weapon_images("soulorb"), self.joysticks, weapon_images("projectile"))
+        self.weapon = Weapon(weapon_images("basicgun"), self.joysticks, weapon_images("projectile"))
 
         # Couleurs du décor
         self.background_color = BLACK
@@ -61,8 +61,8 @@ class Game:
     # Met a jour les éléments du jeu (comme le joueur)
     def update(self, keys):
         # Screen scroll
-        self.screen_scroll = self.player.move(keys, self.screen_rect)
-        screen_scroll = self.player.move(keys, self.screen_rect)
+        self.screen_scroll = self.player.move(keys, self.screen_rect, self.weapon)
+        screen_scroll = self.player.move(keys, self.screen_rect, self.weapon)
         self.world.update(screen_scroll)
 
         # Joueur

@@ -109,7 +109,7 @@ class Menu:
                     #    self.fullscreen = False
                 # Valider (Touche Entrée ou bouton A de la manette)
                 elif key == pygame.K_RETURN or button == 0:
-                    if self.settings_selected == 3: # Retour au menu précédent
+                    if self.settings_selected == 2: # Retour au menu précédent
                         self.in_settings = False
                 # Retour (Echape ou bouton B de la manette)
                 elif key == pygame.K_ESCAPE or button == 1:
