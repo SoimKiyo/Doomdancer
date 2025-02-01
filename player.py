@@ -13,7 +13,7 @@ def scale_img(image,scale):
 # Fonction pour charger les animations
 def player_animations():
     animation_frames = { # Dictionnaire contenant les types d'animations et leur nombre de frames
-        "idle": 2,
+        "idle": 30,
         "run": 8 
     }
     animation_list = {key: [] for key in animation_frames}  # Dictionnaire pour stocker les animations
@@ -125,14 +125,14 @@ class Player:
 
     # Fonction pour gérer l'animation
     def update(self):
-        animation_cooldown = 350
+        animation_cooldown = 60
         # Vérifier quelle action le joueur réalise
         if self.running == True:
             self.update_action("run")
-            animation_cooldown = 120
+            animation_cooldown = 100
         else:
             self.update_action("idle")
-            animation_cooldown = 350
+            animation_cooldown = 60
 
         # Mettre à jour l'image
         self.image = self.animation_list[self.action][self.frame_index]
