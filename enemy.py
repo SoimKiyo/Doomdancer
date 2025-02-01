@@ -1,6 +1,7 @@
 import pygame
 from constants import *
 from player import scale_img
+from timer import *
 
 # Fonction pour charger les animations
 def enemy_animations():
@@ -42,6 +43,10 @@ class Enemy:
         self.health = health
         self.alive = True
 
+        self.target = None  # Référence au joueur
+        self.has_attacked = False # Savoir si l'ennemie vient d'attaquer
+        self.attack_timer = None
+
     #fonction pour faire des dégats à l'ennemie
     def take_damage(self, health, damage):
 
@@ -49,12 +54,65 @@ class Enemy:
 
         # Vérifier si l'ennemie n'as plus de vie
         if self.health <= 0:
-            self.rect.x = 10000
+            self.alive = False
+
+    def set_target(self, player):
+        self.target = player
 
     def ai(self, screen_scroll):
         # Repositionner un ennemie par rapport au scroll
         self.rect.x += screen_scroll[0]
         self.rect.y += screen_scroll[1]
+        if self.alive and self.target:
+            self.move_towards_target()
+
+    def move_towards_target(self):
+        target_x, target_y = self.target.rect.center
+        dx, dy = target_x - self.rect.centerx, target_y - self.rect.centery
+        distance = max(abs(dx), abs(dy))
+
+    def move_towards_target(self):
+            target_x, target_y = self.target.rect.center
+            dx, dy = target_x - self.rect.centerx, target_y - self.rect.centery
+            distance = max(abs(dx), abs(dy))
+
+            if self.has_attacked:
+                if self.attack_timer and self.attack_timer.is_finished():
+                    self.has_attacked = False
+
+                direction_x = dx / distance if distance != 0 else 1
+                direction_y = dy / distance if distance != 0 else 0
+                move_speed = -self.speed * 2
+
+                self.rect.x += move_speed * direction_x
+                self.rect.y += move_speed * direction_y
+                self.flip = direction_x < 0
+                self.update_action("run")
+            
+            elif distance > 0:
+                direction_x = dx / distance
+                direction_y = dy / distance
+
+                if distance > 150:
+                    move_speed = self.speed
+                elif distance > 50:
+                    move_speed = self.speed * 1.5
+                else:
+                    move_speed = self.speed * 2
+                    self.attack()
+                
+                self.rect.x += move_speed * direction_x
+                self.rect.y += move_speed * direction_y
+                self.flip = direction_x < 0
+                self.update_action("run")
+            else:
+                self.update_action("idle")
+    
+    def attack(self):
+        print("Enemy attacks!")
+        self.attack_timer = Timer(3000)
+        self.attack_timer.start()
+        self.has_attacked = True
         
     # Fonction pour gérer l'animation
     def update(self):
@@ -85,9 +143,6 @@ class Enemy:
         # Vérifier si l'animation est fini
         if self.frame_index >= len(self.animation_list[self.action]):
             self.frame_index = 0
-
-        # Déplacement de l'ennemi
-        self.rect.x += self.speed  # Déplacer l'ennemi vers la droite
 
         # Inverser la direction si l'ennemi atteint les bords de l'écran
         if self.rect.right > self.screen_rect.right or self.rect.left < self.screen_rect.left:
