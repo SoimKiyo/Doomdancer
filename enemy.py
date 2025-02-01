@@ -62,17 +62,17 @@ class Enemy:
         if self.health <= 0:
             self.health = 0
             self.alive = False
-        animation_cooldown = 350
+        animation_cooldown = 60
 
         # Vérifier si l'ennemi court ou est inactif
         if self.speed != 0:  # Si l'ennemi se déplace
             self.update_action("run")
             self.running = True
-            animation_cooldown = 120
+            animation_cooldown = 100
         else:  # Si l'ennemi est immobile
             self.update_action("idle")
             self.running = False
-            animation_cooldown = 350
+            animation_cooldown = 60
 
         # Mettre à jour l'image de l'animation
         self.image = self.animation_list[self.action][self.frame_index]
