@@ -1,30 +1,47 @@
-SCREEN_WIDTH = 960
-SCREEN_HEIGHT = 540
-FPS = 60
+## Configuration générale du jeu
+SCREEN_WIDTH = 960  # Largeur de l'écran en pixels
+SCREEN_HEIGHT = 540  # Hauteur de l'écran en pixels
+FPS = 60  # Nombre d'images par seconde (Max)
 
-PLAYER_WIDTH = 50
-PLAYER_HEIGHT = 50
-PLAYER_SPEED = 5
-PLAYER_COLOR = (0, 128, 255)
-SCALE = 3
-WEAPON_SCALE = 1.5
-PROJECTILE_SPEED = 10
-OFFSET_Y = 12
-OFFSET_X = 8
+## Paramètres du joueur
+PLAYER_WIDTH = 50  # Largeur du joueur
+PLAYER_HEIGHT = 50  # Hauteur du joueur
+PLAYER_SPEED = 5  # Vitesse de déplacement du joueur
+PLAYER_COLOR = (0, 128, 255)  # Couleur de la box du joueur (bleu)
 
-ENEMY_WIDTH = 40
-ENEMY_HEIGHT = 40
-ENEMY_SPEED = 4
-ENEMY_COLOR = (255, 128, 0)
-ENEMY_HEALTH = 100
+## Échelle de mise à l'échelle des sprites
+SCALE = 3  # Mise à l'échelle des sprites du joueur et des éléments
+WEAPON_SCALE = 1.5  # Mise à l'échelle des armes
 
-SCROLL_THRESH = 200
-screen_scroll = [0,0]
-TILE_SIZE = 24 * SCALE
-TILE_TYPES = 15
-ROWS = 16
-COLS = 150
+## Paramètres des projectiles
+PROJECTILE_SPEED = 10  # Vitesse des projectiles lorsqu'ils sont tirés
+MOUSE_TIMEOUT = 150  # Durée pour considérer une entrée comme "récente"
 
-RED = (255, 0, 0)
-WHITE = (255, 255, 255)
-BLACK = (0,0,0)
+## Décalage des sprites
+OFFSET_Y = 25  # Décalage vertical appliqué aux sprites
+OFFSET_X = 25  # Décalage horizontal appliqué aux sprites
+
+WEAPON_OFFSET_X = 20  # Décalage horizontal de l'arme
+WEAPON_OFFSET_Y = 0   # Décalage vertical de l'arme
+
+## Paramètres des ennemis
+ENEMY_WIDTH = 40  # Largeur des ennemis
+ENEMY_HEIGHT = 40  # Hauteur des ennemis
+ENEMY_SPEED = 4  # Vitesse de déplacement des ennemis
+ENEMY_COLOR = (255, 128, 0)  # Couleur de la box des ennemies (orange)
+ENEMY_HEALTH = 100  # Points de vie des ennemis
+
+## Paramètres du scrolling
+SCROLL_THRESH = 200  # Distance à partir de laquelle l'écran commence à défiler
+screen_scroll = [0, 0]  # Stocke le décalage du scrolling en (x, y)
+
+## Paramètres de la carte
+TILE_SIZE = 24 * SCALE  # Taille des tiles en pixels après mise à l'échelle
+TILE_TYPES = 15  # Nombre total de types de tiles
+ROWS = 16  # Nombre de lignes dans la carte (Fichier CSV)
+COLS = 150  # Nombre de colonnes dans la carte (Fichier CSV)
+
+## Couleurs de base
+RED = (255, 0, 0)  # Rouge
+WHITE = (255, 255, 255)  # Blanc
+BLACK = (0, 0, 0)  # Noir

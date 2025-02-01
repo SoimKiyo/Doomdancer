@@ -24,7 +24,7 @@ def enemy_animations():
 
 # Classe de l'ennemie
 class Enemy:
-    # Initialise l'ennemie' et ses valeurs
+    # Initialise l'ennemie et ses valeurs
     def __init__(self, x, y, width, height, health, mob_animations, char_type):
         self.char_type = char_type
         self.flip = False  # Permet de tourner l'image de l'ennemie

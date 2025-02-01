@@ -1,5 +1,3 @@
-# player.py
-
 import pygame
 import math
 from constants import *
@@ -16,7 +14,7 @@ def player_animations():
     animation_frames = { 
         "idle": 30, 
         "run": 8  
-    } 
+    }
     animation_list = {key: [] for key in animation_frames}  # Dictionnaire pour stocker les animations 
     for animation, num_frames in animation_frames.items():
         for i in range(num_frames):
@@ -28,22 +26,29 @@ def player_animations():
 
 class Player:
     def __init__(self, x, y, width, height, animation_list):
-        # Animation/Sprite du personnage
-        self.flip = False  # Permet de tourner l'image du joueur
+        # Animation / Sprite du personnage
+        self.flip = False  # Permet de retourner l'image du joueur
         self.animation_list = animation_list
-        self.frame_index = 0  # Première frame de l'animation
+        self.frame_index = 0  # Frame de départ
         self.action = "idle"
-        self.update_time = pygame.time.get_ticks()  # Temps pour mettre à jour l'animation
+        self.update_time = pygame.time.get_ticks()  # Temps de mise à jour de l'animation
         self.running = False
         self.image = self.animation_list[self.action][self.frame_index]
         # Rectangle du joueur
         self.rect = pygame.Rect(x, y, width, height)
         self.rect.center = (x, y)
         self.speed = PLAYER_SPEED  # Vitesse de déplacement
-        self.screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)  # Limites par défaut de l'écran
-        # Attributs pour mémoriser la dernière direction de déplacement (normalisée)
+        self.screen_rect = pygame.Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)  # Limites de l'écran
+        # Création d'une hitbox
+        self.hitbox = pygame.Rect(0, 0, width - 10, height - 10)
+        self.hitbox.center = self.rect.center
+
+        # Pour mémoriser la dernière direction de déplacement (normalisée)
         self.last_dx = 0
         self.last_dy = 0
+        # Pour conserver la dernière position connue de la souris
+        self.last_mouse_pos = None
+        self.using_mouse = False # La souris est-elle utilisé ?
 
     def update_screen_limits(self, screen_width, screen_height):
         self.screen_rect = pygame.Rect(0, 0, screen_width, screen_height)
@@ -51,52 +56,77 @@ class Player:
     def move(self, keys, screen_rect, weapon):
         screen_scroll = [0, 0]
         self.running = False
-        dx = 0
-        dy = 0
 
-        # Déplacement clavier (ZQSD ou flèches directionnelles)
-        dx += (keys[pygame.K_d] or keys[pygame.K_RIGHT]) - (keys[pygame.K_q] or keys[pygame.K_LEFT])
-        dy += (keys[pygame.K_s] or keys[pygame.K_DOWN]) - (keys[pygame.K_z] or keys[pygame.K_UP])
+        # Entrées clavier (ZQSD/Flèches directionnel)
+        dx_keyboard = (keys[pygame.K_d] or keys[pygame.K_RIGHT]) - (keys[pygame.K_q] or keys[pygame.K_LEFT])
+        dy_keyboard = (keys[pygame.K_s] or keys[pygame.K_DOWN]) - (keys[pygame.K_z] or keys[pygame.K_UP])
         
-        # Déplacement via la manette (Joystick et D-Pad)
+        # Entrées manettes (Dpad/Joystick Gauche)
+        dx_gamepad = 0
+        dy_gamepad = 0
         for joystick in joysticks:
-            # Utilisation du joystick
+            # Joystick gauche
             if joystick.get_numaxes() >= 2:
-                horiz_move = joystick.get_axis(0)  # Axe X (gauche/droite)
-                vert_move = joystick.get_axis(1)   # Axe Y (haut/bas)
-                # Gestion de la sensibilité du joystick (angle mort à 0.15)
+                horiz_move = joystick.get_axis(0)
+                vert_move = joystick.get_axis(1)
                 if abs(horiz_move) > 0.15:
-                    dx += horiz_move
+                    dx_gamepad += horiz_move
                 if abs(vert_move) > 0.15:
-                    dy += vert_move
-            # Utilisation du D-Pad
+                    dy_gamepad += vert_move
+            # D-Pad
             if joystick.get_numhats() > 0:
                 hat_x, hat_y = joystick.get_hat(0)
                 if hat_x != 0:
-                    dx = hat_x
+                    dx_gamepad += hat_x
                 if hat_y != 0:
-                    dy = -hat_y
+                    dy_gamepad -= hat_y
 
-        # Si le joueur se déplace, enregistrer la direction pour orienter l'arme
+        # Calcul du déplacement total
+        dx = dx_keyboard + dx_gamepad
+        dy = dy_keyboard + dy_gamepad
+
+        # Mise à jour de l'info sur la souris
+        rel = pygame.mouse.get_rel()  # Renvoie le mouvement relatif depuis le dernier appel
+        if rel != (0, 0):
+            self.using_mouse = True
+            self.last_mouse_pos = pygame.mouse.get_pos()
+        # Si aucun mouvement n'est détecté et qu'on n'a jamais eu d'info sur la souris, on garde les mouvements du clavier
+        elif self.last_mouse_pos is None:
+            self.using_mouse = False
+
+        # Si le joueur se déplace
         if dx != 0 or dy != 0:
             self.running = True
-            if not weapon.using_right_stick and not weapon.using_mouse:
-                self.flip = dx < 0  # Flip du joueur selon la direction de déplacement
-            # Normalisation de la direction de déplacement
+            # Priorité à la souris pour le flip si elle a bougé
+            if self.using_mouse and self.last_mouse_pos:
+                self.flip = self.last_mouse_pos[0] < self.rect.centerx
+            # Sinon, on se base sur la direction clavier (ou manette)
+            else:
+                # Pour le clavier (dx_keyboard)
+                if dx_keyboard != 0:
+                    self.flip = dx_keyboard < 0
+                # Pour la manette (si aucun input clavier)
+                elif dx_gamepad != 0:
+                    self.flip = dx_gamepad < 0
+
+            # Normalisation de la direction pour conserver le dernier vecteur de déplacement
             norm = math.sqrt(dx ** 2 + dy ** 2)
             norm_dx = dx / norm
             norm_dy = dy / norm
-            # Stocker la dernière direction pour que l'arme s'oriente en conséquence
             self.last_dx = norm_dx
             self.last_dy = norm_dy
+
             dx = norm_dx * self.speed
             dy = norm_dy * self.speed
 
-        # Appliquer le mouvement au joueur
+        # Appliquer le déplacement
         self.rect.x += dx
         self.rect.y += dy
 
-        # Gestion du défilement de l'écran en fonction de la position du joueur
+        # Mise à jour de la hitbox pour qu'elle suive le joueur
+        self.hitbox.center = self.rect.center
+
+        # Défilement de l'écran en fonction de la position du joueur
         if self.rect.right > (SCREEN_WIDTH - SCROLL_THRESH):
             screen_scroll[0] = (SCREEN_WIDTH - SCROLL_THRESH) - self.rect.right
             self.rect.right = SCREEN_WIDTH - SCROLL_THRESH
@@ -113,8 +143,7 @@ class Player:
         return screen_scroll
 
     def update(self):
-        animation_cooldown = 60
-        # Déterminer l'action (idle ou run) en fonction du déplacement
+        animation_cooldown = 60 # Temps entre chaque frame
         if self.running:
             self.update_action("run")
             animation_cooldown = 100
@@ -122,25 +151,22 @@ class Player:
             self.update_action("idle")
             animation_cooldown = 60
 
-        # Mettre à jour l'image du joueur selon l'animation courante
         self.image = self.animation_list[self.action][self.frame_index]
-        # Vérifier le temps écoulé depuis la dernière frame
-        if pygame.time.get_ticks() - self.update_time > animation_cooldown:
+        if pygame.time.get_ticks() - self.update_time > animation_cooldown: # Changer de frame en fonction du cooldown
             self.frame_index += 1
             self.update_time = pygame.time.get_ticks()
-        # Réinitialiser l'animation si nécessaire
         if self.frame_index >= len(self.animation_list[self.action]):
             self.frame_index = 0
 
     def update_action(self, new_action):
-        # Changer d'action si nécessaire et réinitialiser l'animation
         if new_action != self.action:
             self.action = new_action
             self.frame_index = 0
             self.update_time = pygame.time.get_ticks()
 
     def draw(self, surface):
-        # Afficher le joueur avec flip si nécessaire
         flipped_image = pygame.transform.flip(self.image, self.flip, False)
-        surface.blit(flipped_image, (self.rect.x - SCALE * OFFSET_X, self.rect.y - SCALE * OFFSET_Y))
-        pygame.draw.rect(surface, PLAYER_COLOR, self.rect, 1)
+        # Positionner le sprite par rapport à la hitbox
+        surface.blit(flipped_image, (self.hitbox.x - SCALE * OFFSET_X, self.hitbox.y - SCALE * OFFSET_Y))
+        # Dessine la hitbox (optionnel, pour le debug)
+        pygame.draw.rect(surface, PLAYER_COLOR, self.hitbox, 1)
