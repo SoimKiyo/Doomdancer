@@ -26,6 +26,10 @@ class Weapon():
         self.last_mouse_time = 0
         self.last_joystick_time = 0
 
+        self.crosshair_image = pygame.image.load("assets/images/weapons/crosshair.png").convert_alpha()  # Charge l'image du crosshair
+        self.crosshair_pos = pygame.mouse.get_pos()
+        
+
     def update(self, player):
         shot_cooldown = 200
         projectile = None
@@ -50,6 +54,9 @@ class Weapon():
             if math.hypot(dx, dy) > 5:  # Seuil pour ignorer les petits mouvements
                 aim_mouse = (dx, dy)
                 self.last_mouse_time = current_time 
+
+        if aim_mouse is not None:
+            self.crosshair_pos = pygame.mouse.get_pos()
 
         # On vérifie si les entrées sont récentes ou non
         joy_recent = (aim_joy is not None) and ((current_time - self.last_joystick_time) < MOUSE_TIMEOUT)
@@ -125,6 +132,10 @@ class Weapon():
         rotated_image = pygame.transform.rotate(image_to_draw, -self.angle)
         new_rect = rotated_image.get_rect(center=self.rect.center)
         surface.blit(rotated_image, new_rect.topleft)
+        if self.last_joystick_time > 0:  # Cache après 300ms sans souris
+            mouse_x, mouse_y = self.crosshair_pos
+            surface.blit(self.crosshair_image, (mouse_x - self.crosshair_image.get_width() // 2, 
+                                                mouse_y - self.crosshair_image.get_height() // 2))
 
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, image, x, y, angle):

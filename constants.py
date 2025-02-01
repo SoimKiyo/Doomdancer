@@ -11,7 +11,7 @@ PLAYER_COLOR = (0, 128, 255)  # Couleur de la box du joueur (bleu)
 
 ## Échelle de mise à l'échelle des sprites
 SCALE = 3  # Mise à l'échelle des sprites du joueur et des éléments
-WEAPON_SCALE = 1.5  # Mise à l'échelle des armes
+WEAPON_SCALE = 2  # Mise à l'échelle des armes
 
 ## Paramètres des projectiles
 PROJECTILE_SPEED = 10  # Vitesse des projectiles lorsqu'ils sont tirés
@@ -19,10 +19,10 @@ MOUSE_TIMEOUT = 150  # Durée pour considérer une entrée comme "récente"
 
 ## Décalage des sprites
 OFFSET_Y = 25  # Décalage vertical appliqué aux sprites
-OFFSET_X = 25  # Décalage horizontal appliqué aux sprites
+OFFSET_X = 20  # Décalage horizontal appliqué aux sprites
 
-WEAPON_OFFSET_X = 20  # Décalage horizontal de l'arme
-WEAPON_OFFSET_Y = 0   # Décalage vertical de l'arme
+WEAPON_OFFSET_X = 40  # Décalage horizontal de l'arme
+WEAPON_OFFSET_Y = -5   # Décalage vertical de l'arme
 
 ## Paramètres des ennemis
 ENEMY_WIDTH = 40  # Largeur des ennemis

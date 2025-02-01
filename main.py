@@ -13,6 +13,7 @@ clock = pygame.time.Clock() # FramesRate
 font_title = pygame.font.Font(None, 80)  # Police pour les titres
 font_option = pygame.font.Font(None, 36)  # Police pour les options
 pygame.joystick.init() # Initialiser les manettes
+pygame.mouse.set_visible(False)  # Cache le curseur de la souris
 
 # Chargement des tiles de la map
 map_sprites()
