@@ -8,10 +8,10 @@ from map import map_sprites
 # Initialisation de Pygame
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT)) # Taille de l'écran
-pygame.display.set_caption("Doomdancer") # Titre du jeu
+pygame.display.set_caption("RemnA.I.nt") # Titre du jeu
 clock = pygame.time.Clock() # FramesRate
-font_title = pygame.font.Font(None, 80)  # Police pour les titres
-font_option = pygame.font.Font(None, 36)  # Police pour les options
+font_title = pygame.font.Font("assets/other/fonts/font.otf", 80)  # Police pour les titres
+font_option = pygame.font.Font("assets/other/fonts/font.otf", 36)  # Police pour les options
 pygame.joystick.init() # Initialiser les manettes
 
 # Chargement des tiles de la map

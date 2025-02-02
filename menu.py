@@ -5,15 +5,15 @@ class Menu:
     def __init__(self, screen_width, screen_height):
         
         # Options du menu principal
-        self.main_menu_options = ["Jouer", "Paramètres", "Quitter"]
+        self.main_menu_options = ["| Jouer", "| Paramètres", "| Quitter"]
         # Options du menu pause
-        self.pause_menu_options = ["Reprendre", "Paramètres", "Menu Principal"]
+        self.pause_menu_options = ["| Reprendre", "| Paramètres", "| Menu Principal"]
         self.selected = 0 # Index de l'option sélectionnée
         self.is_pause_menu = False # Le menu pause est t'il actif ?
         self.in_settings = False # Le menu paramètres est t'il actif ?
 
         # Options du menu des paramètres
-        self.settings_options = ["Volume Musique", "Volume Effets", "Retour"]
+        self.settings_options = ["| Volume Musique", "| Volume Effets", "| Retour"]
         self.music_volume = 0.5
         self.sound_effects_volume = 0.7
         #self.fullscreen = False
@@ -22,6 +22,10 @@ class Menu:
         # Dimensions de l'écran
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.background_image = pygame.image.load("assets/images/ui/menu/menuback.png")  # Image de fond
+        self.background_image = pygame.transform.scale(self.background_image, (screen_width, screen_height)) # Redimenssione l'image par rapport à la fenetre
+        self.logo_image = pygame.image.load("assets/images/ui/menu/logo.png")  # Image du logo
+
 
         # Position verticale du premier élément du menu
         self.option_start_y = 200
@@ -29,41 +33,36 @@ class Menu:
 
     # Fonction pour afficher les menu
     def draw(self, screen, font_title, font_option):
-        # Déterminer quel menu afficher (Pause, Paramètres, ou Principal)
-        if self.is_pause_menu:
-            screen.fill((30, 30, 30)) # Fond gris foncé pour le menu pause
-            title = font_title.render("PAUSE", True, (255, 215, 0)) # Texte jaune
-        elif self.in_settings:
-            screen.fill((20, 20, 50)) # Fond bleu foncé pour les paramètres
-            title = font_title.render("PARAMÈTRES", True, (135, 206, 235)) # Texte bleu clair
-        else:
-            screen.fill((10, 10, 20)) # Fond noir pour le menu principal
-            title = font_title.render("DOOMDANCER", True, (255, 0, 0)) # Texte rouge
+        # Afficher l'image de fond
+        screen.blit(self.background_image, (0, 0))
 
-        # Affichage du titre centré en haut de l'écran
-        screen.blit(title, (self.screen_width // 2 - title.get_width() // 2, 80))
+        # Si le menu pause est actif, afficher le titre "Paramètres"
+        if self.is_pause_menu:
+            title = font_title.render("Paramètres", True, (255, 255, 255)) 
+            screen.blit(title, (50, 80))  # Aligné à gauche
+        else:
+            # Sinon, afficher le logo à la place du texte
+            screen.blit(self.logo_image, (50, 50))  # Position du logo
 
         # Affichage des options selon le menu actuel
         if self.in_settings:
             for i, option in enumerate(self.settings_options):
                 # Détermine la couleur de l'option sélectionnée
-                color = (255, 255, 255) if i == self.settings_selected else (150, 150, 150)
+                color = (255,255,255) if i == self.settings_selected else (150, 150, 150)
                 # Affiche la valeur des paramètres si besoins
-                option_text = f"{option} : {int(self.music_volume * 100)}%" if option == "Volume Musique" else \
-                              f"{option} : {int(self.sound_effects_volume * 100)}%" if option == "Volume Effets" else option
+                option_text = f"{option} : {int(self.music_volume * 100)}%" if option == "| Volume Musique" else \
+                              f"{option} : {int(self.sound_effects_volume * 100)}%" if option == "| Volume Effets" else option
                               #f"{option} : {'Oui' if self.fullscreen else 'Non'}" if option == "Plein Écran" else option
                 text = font_option.render(option_text, True, color)
-                screen.blit(text, (self.screen_width // 2 - text.get_width() // 2, 200 + i * 50))
+                screen.blit(text, (50, 200 + i * 50))
         else:
             # Déterminer les options à afficher (Menu principal ou menu pause)
             options = self.pause_menu_options if self.is_pause_menu else self.main_menu_options
             for i, option in enumerate(options):
-                color = (255, 255, 255) if i == self.selected else (150, 150, 150)
+                color = (255,255,255) if i == self.settings_selected else (150, 150, 150)
 
                 text = font_option.render(option, True, color)
-                text_x = self.screen_width // 2 - text.get_width() // 2
-                text_y = self.option_start_y + i * self.option_spacing
-                screen.blit(text, (text_x, text_y))
+                screen.blit(text, (50, self.option_start_y + i * self.option_spacing))
 
     # Fonction pour gérer les entrées clavier/manette dans les menu
     def handle_input(self, event):
@@ -141,7 +140,7 @@ class Menu:
         # Parcours les options du menu
         for i, option in enumerate(options):
             option_y = self.option_start_y + i * self.option_spacing # Position Y de l'option
-            option_x = self.screen_width // 2 - 100  # Centrage horizontal
+            option_x = 50 # Centrage horizontal
 
             # Vérifie si la souris est sur une option
             if option_x <= x <= option_x + 200 and option_y <= y <= option_y + 40:
