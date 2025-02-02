@@ -32,7 +32,6 @@ class HealthBar:
         self.player = player  # Référence au joueur
 
     def draw(self, screen):
-        """Dessine la barre de vie en fonction de la santé du joueur"""
         health_ratio = self.player.health / self.player.max_health
         pygame.draw.rect(screen, (150, 0, 0), (self.x, self.y, self.width, self.height))  # Fond rouge
         pygame.draw.rect(screen, (0, 255, 0), (self.x, self.y, self.width * health_ratio, self.height))  # Vie verte
