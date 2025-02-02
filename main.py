@@ -39,6 +39,14 @@ def update_screen_dimensions():
     menu.screen_height = SCREEN_HEIGHT
     game.update_screen_limits(SCREEN_WIDTH, SCREEN_HEIGHT)
 
+# Fonction pour jouer la musique en boucle
+def play_music(music_path):
+    pygame.mixer.music.load(music_path)
+    pygame.mixer.music.play(-1)  # -1 signifie jouer en boucle
+
+play_music(MENU_MUSIC)
+pygame.mixer.music.set_volume(menu.music_volume) # Applique le volume à la musique
+
 # Boucle principale
 while running:
     # Récupère les évènements pygame (Clavier/Souris/etc)
@@ -60,6 +68,7 @@ while running:
             if action == "play":
                 in_game = True
                 game.reset()  # Réinitialiser le jeu au démarrage
+                play_music(GAME_MUSIC)
             elif action == "quit":
                 running = False
         elif paused:
@@ -72,6 +81,7 @@ while running:
             elif action == "menu":
                 paused = False
                 in_game = False
+                play_music(MENU_MUSIC)
             elif action == "quit":
                 running = False
         else:
@@ -93,12 +103,13 @@ while running:
         menu.draw(screen, font_title, font_option)
     # Sinon on est en jeu
     else:
-        pygame.event.set_grab(True)
-        pygame.mouse.set_visible(False)
-        # Appeler les mises à jour et le rendu du jeu
-        keys = pygame.key.get_pressed()
-        game.update(keys)  # Met à jour le joueur
-        game.draw(screen)  # Dessine la scène de jeu
+        if not paused:
+            pygame.event.set_grab(True)
+            pygame.mouse.set_visible(False)
+            # Appeler les mises à jour et le rendu du jeu
+            keys = pygame.key.get_pressed()
+            game.update(keys)  # Met à jour le joueur
+            game.draw(screen)  # Dessine la scène de jeu
         
     # On raffraichit et limite les FPS
     pygame.display.flip() #Met a jour l'affichage (tout sans spécification)

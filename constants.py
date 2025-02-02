@@ -45,3 +45,8 @@ COLS = 150  # Nombre de colonnes dans la carte (Fichier CSV)
 RED = (255, 0, 0)  # Rouge
 WHITE = (255, 255, 255)  # Blanc
 BLACK = (0, 0, 0)  # Noir
+
+## Musiques
+MENU_MUSIC = "assets/audio/music/ScreenTitleMusic.mp3"
+GAME_MUSIC = "assets/audio/music/AmbiantMusic.mp3"
+BOSS_MUSIC = "assets/audio/music/BossMusic.mp3"

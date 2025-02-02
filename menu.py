@@ -16,6 +16,7 @@ class Menu:
         self.settings_options = ["| Volume Musique", "| Volume Effets", "| Retour"]
         self.music_volume = 0.5
         self.sound_effects_volume = 0.7
+
         #self.fullscreen = False
         self.settings_selected = 0 # Index de l'option sélectionnée
 
@@ -59,7 +60,7 @@ class Menu:
             # Déterminer les options à afficher (Menu principal ou menu pause)
             options = self.pause_menu_options if self.is_pause_menu else self.main_menu_options
             for i, option in enumerate(options):
-                color = (255,255,255) if i == self.settings_selected else (150, 150, 150)
+                color = (255,255,255) if i == self.selected else (150, 150, 150)
 
                 text = font_option.render(option, True, color)
                 screen.blit(text, (50, self.option_start_y + i * self.option_spacing))
@@ -103,12 +104,14 @@ class Menu:
                         self.music_volume = min(1.0, self.music_volume + 0.1)
                     elif self.settings_selected == 1: # Effets sonores
                         self.sound_effects_volume = min(1.0, self.sound_effects_volume + 0.1)
+                        pygame.mixer.music.set_volume(self.music_volume) # Met à jour le volume de la musique
                     #elif self.settings_selected == 2: # Plein écrans
                     #    self.fullscreen = True
                 # Descendre une valeur (flèche gauche, D-Pad gauche)
                 elif key in (pygame.K_LEFT,  pygame.K_q) or hat_value[0] == -1:
                     if self.settings_selected == 0: # Musique
                         self.music_volume = max(0.0, self.music_volume - 0.1)
+                        pygame.mixer.music.set_volume(self.music_volume) # Met à jour le volume de la musique
                     elif self.settings_selected == 1: # Effets sonores
                         self.sound_effects_volume = max(0.0, self.sound_effects_volume - 0.1)
                     #elif self.settings_selected == 2: # Plein écrans
