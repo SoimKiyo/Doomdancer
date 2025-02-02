@@ -28,6 +28,7 @@ class Weapon():
 
         self.crosshair_image = pygame.image.load("assets/images/weapons/crosshair.png").convert_alpha()  # Charge l'image du crosshair
         self.crosshair_pos = pygame.mouse.get_pos()
+        self.use_crosshair = True
         
 
     def update(self, player):
@@ -37,6 +38,7 @@ class Weapon():
 
        # Entrées de la Manette (Joystick)
         aim_joy = None
+        joystick_active = False
         for joystick in self.joysticks:
             if joystick.get_numaxes() >= 4: # Joystick droit
                 x = joystick.get_axis(2)
@@ -44,16 +46,19 @@ class Weapon():
                 if abs(x) > 0.15 or abs(y) > 0.15:
                     aim_joy = (x, y)
                     self.last_joystick_time = current_time
+                    joystick_active = True
                     break  # On prend le premier Joystick actif
 
         # Entrées de la Souris
         aim_mouse = None
+        mouse_active = False
         if player.using_mouse and player.last_mouse_pos:
             dx = player.last_mouse_pos[0] - player.rect.centerx
             dy = player.last_mouse_pos[1] - player.rect.centery
             if math.hypot(dx, dy) > 5:  # Seuil pour ignorer les petits mouvements
                 aim_mouse = (dx, dy)
                 self.last_mouse_time = current_time 
+                mouse_active = True
 
         if aim_mouse is not None:
             self.crosshair_pos = pygame.mouse.get_pos()
@@ -61,6 +66,13 @@ class Weapon():
         # On vérifie si les entrées sont récentes ou non
         joy_recent = (aim_joy is not None) and ((current_time - self.last_joystick_time) < MOUSE_TIMEOUT)
         mouse_recent = (aim_mouse is not None) and ((current_time - self.last_mouse_time) < MOUSE_TIMEOUT)
+
+        # Détermine si le crosshair doit être affiché
+        if joystick_active:
+            self.use_crosshair = False  # Désactiver le crosshair si la manette est utilisée
+        elif mouse_active:
+            self.use_crosshair = True  # Réactiver le crosshair si la souris est utilisée
+
 
         # Prioritésation quand manette et souris sont utilisé
         if joy_recent and mouse_recent:
@@ -132,9 +144,10 @@ class Weapon():
         rotated_image = pygame.transform.rotate(image_to_draw, -self.angle)
         new_rect = rotated_image.get_rect(center=self.rect.center)
         surface.blit(rotated_image, new_rect.topleft)
-        if self.last_joystick_time > 0:  # Cache après 300ms sans souris
+        # Afficher le crosshair uniquement si la souris est utilisée
+        if self.use_crosshair:
             mouse_x, mouse_y = self.crosshair_pos
-            surface.blit(self.crosshair_image, (mouse_x - self.crosshair_image.get_width() // 2, 
+            surface.blit(self.crosshair_image, (mouse_x - self.crosshair_image.get_width() // 2,
                                                 mouse_y - self.crosshair_image.get_height() // 2))
 
 class Projectile(pygame.sprite.Sprite):

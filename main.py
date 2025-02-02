@@ -13,7 +13,6 @@ clock = pygame.time.Clock() # FramesRate
 font_title = pygame.font.Font(None, 80)  # Police pour les titres
 font_option = pygame.font.Font(None, 36)  # Police pour les options
 pygame.joystick.init() # Initialiser les manettes
-pygame.mouse.set_visible(False)  # Cache le curseur de la souris
 
 # Chargement des tiles de la map
 map_sprites()
@@ -56,6 +55,7 @@ while running:
         if not in_game:
             # Gestion du menu principal et de ses entrées
             pygame.event.set_grab(False)
+            pygame.mouse.set_visible(True)
             action = menu.handle_input(event)
             if action == "play":
                 in_game = True
@@ -65,6 +65,7 @@ while running:
         elif paused:
             # Gestion du menu pause
             pygame.event.set_grab(False)
+            pygame.mouse.set_visible(True)
             action = menu.handle_input(event)
             if action == "resume":
                 paused = False
@@ -87,11 +88,13 @@ while running:
     # Affichage (On dessine le menu principal)
     if not in_game or paused:
         pygame.event.set_grab(False)
+        pygame.mouse.set_visible(True)
         menu.is_pause_menu = paused
         menu.draw(screen, font_title, font_option)
     # Sinon on est en jeu
     else:
         pygame.event.set_grab(True)
+        pygame.mouse.set_visible(False)
         # Appeler les mises à jour et le rendu du jeu
         keys = pygame.key.get_pressed()
         game.update(keys)  # Met à jour le joueur
