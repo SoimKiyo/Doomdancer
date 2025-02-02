@@ -28,9 +28,9 @@ Semaine 1 : Ajout de toutes les bases
 - Sprites
 - Map
 - Enemies et leur IA + Boss
-- Joueur et ses deplacements
-- Arme et melee
-- Menu
+// - Joueur et ses deplacements
+// - Arme et melee
+// - Menu
 - Systeme de vie et mort/respawn
 - Pieces et le shop + PNJ
 - Polissage et reorganisation en fin de semaine
@@ -47,7 +47,7 @@ Semaine 2 : Ajout des mecaniques complexes
 Semaine 3 : Finalisation
 - Shader pour ameliorer les lumieres
 - Musiques et SFX
-- Choix du nom et logo
+// - Choix du nom et logo
 - Documentation et video de showcase
 - Cahier des charges
 - Testing final et resolutions des bugs + reorganisation/commentaires
