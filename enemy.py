@@ -48,7 +48,7 @@ class Enemy:
         self.attack_timer = None
 
     #fonction pour faire des dégats à l'ennemie
-    def take_damage(self, health, damage):
+    def take_damage(self, damage):
 
         self.health -= damage #fais des dégats à l'ennemie
 
@@ -113,6 +113,7 @@ class Enemy:
         self.attack_timer = Timer(3000)
         self.attack_timer.start()
         self.has_attacked = True
+        
         
     # Fonction pour gérer l'animation
     def update(self):

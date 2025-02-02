@@ -2,6 +2,7 @@ import pygame
 import math
 import random
 from constants import *
+from ui import DamageText
 
 # Classe de l'arme
 class Weapon():
@@ -135,7 +136,10 @@ class Weapon():
 
         return projectile
 
-    def draw(self, surface):
+    def draw(self, surface, player):
+        if player.hide_weapon:
+            return
+            
         # Retourner l'image si nécessaire avant la rotation
         image_to_draw = self.original_image
         if self.flip:
@@ -188,3 +192,65 @@ class Projectile(pygame.sprite.Sprite):
             self.rect.centerx - self.image.get_width() // 2,
             self.rect.centery - self.image.get_height() // 2
         ))
+
+
+class MeleeAttack:
+    def __init__(self, joysticks, damage_text_group):
+        self.joysticks = joysticks # Les manettes
+        self.damage = 30 # Nombre de dégâts
+        self.attack_range = 50 # Porté de l'attaque
+        self.attack_cooldown = 300 # Temps avant de pouvoir réattaquer
+        self.attack_duration = 300 # Temps de l'attaque
+        self.last_attack = 0 # Depuis combien temps a était faite la dernier attaque
+        self.attacking = False # Somme nous entrain d'attaquer ?
+        self.attack_start_time = 0 # Depuis quand a commencer l'attaque
+
+        self.damage_text_group = damage_text_group
+
+    def update(self, player, enemy_list):
+        current_time = pygame.time.get_ticks()
+        melee_trigger = False
+
+        # Vérifier l'entrée de la manette (bouton A)
+        for joystick in self.joysticks:
+            if joystick.get_numbuttons() > 0 and joystick.get_button(0):
+                melee_trigger = True
+                break
+
+        # Vérifier l'entrée de la souris (clic droit)
+        if pygame.mouse.get_pressed()[2]:
+            melee_trigger = True
+
+        # Lancer l'attaque si le cooldown est écoulé
+        if melee_trigger and (current_time - self.last_attack >= self.attack_cooldown):
+            self.attacking = True
+            self.last_attack = current_time
+            self.attack_start_time = current_time
+            # On active le mode "attaque" sur le joueur pour bloquer l’animation
+            player.is_attacking = True
+            # On met l’animation melee
+            #player.update_action("melee")
+
+            # Cache l'arme pendant l'attaque
+            player.hide_weapon = True
+            
+            # Hitbox pour l'attaque
+            if player.flip:
+                # Si le joueur regarde à gauche, la hitbox est à gauche
+                melee_rect = pygame.Rect(player.rect.left - self.attack_range, player.rect.top, self.attack_range, player.rect.height)
+            else:
+                # Sinon, à droite
+                melee_rect = pygame.Rect(player.rect.right, player.rect.top, self.attack_range, player.rect.height)
+            
+            # On vérifie la collision avec chaque ennemi
+            for enemy in enemy_list:
+                if enemy.alive and melee_rect.colliderect(enemy.rect):
+                    enemy.take_damage(self.damage)
+                    damage_text = DamageText(enemy.rect.centerx, enemy.rect.y - 20, str(self.damage), RED, [0, 0])
+                    self.damage_text_group.add(damage_text)
+
+        # Fin de l'attaque après la durée définie
+        if self.attacking and (current_time - self.attack_start_time >= self.attack_duration):
+            self.attacking = False
+            player.is_attacking = False
+            player.hide_weapon = False  # Réaffiche l'arme après l'attaque

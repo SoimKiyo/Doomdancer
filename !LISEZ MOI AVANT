@@ -10,6 +10,19 @@ enemy.py # Classe des ennemies
 map.py # Generation procedurale des donjons
 ui.py # Interactif utilisateur (HUD)
 
+# Info pratique game design
+Deplacement dans le menu avec les joystick possible
+quand on arrive au derniere selection du menu on peut pas redescendre pour revenir au depart
+
+B/RL pour la roulade / Clique droit
+X pour recharge / R
+Tirer RB / Clique Gauche
+Le curseur peut aller n'importe ou et fait bouger la camera
+Auto reload
+
+Quand on tourne le joueur sa tourne tout le joueur et l'arme
+Quand ou tourne l'arme sa tourne tout sauf la direction
+
 # Roadmap
 Semaine 1 : Ajout de toutes les bases
 - Sprites
@@ -79,13 +92,83 @@ Si la marque explose sur un ennemi, il peut aussi ralentir les balles alentour.
 
 
 Script :
-Dans un royaume médiéval plongé dans les ténèbres,  
-Un héros, connu sous le nom de “L’Ombre”, c'est sacrifié en utilisant le parchemin sacré
-dans le but de sauvé l'humanité. Cependant son âme fu supprimer en contre partie de l'utilisation
-de cette arme divine. Le dieu Hadès décida de récupéré ce qui restait de l'âme de ce mortel
-étant intéréssé par son pouvoir pour nettoyer le royaume des morts des âmes érantes
-celui ci doit naviguer à travers des donjons mystérieux et labyrinthiques, affronter des créatures fantastiques 
-et vaincre des boss redoutables pour accomplir sa mission qu'il ne peut refuser étant dicter/diriger.
+RemnA.I.nt - Script du jeu
+1. Introduction (Cinematic d’ouverture)
+(Écran noir, bruit d’interface corrompue, texte qui apparaît lentement en blanc digitalisé)
+
+Système en ligne...
+Erreur : données manquantes.
+Reconstruction de la mémoire...
+Statut : Unité autonome - Déconnectée du réseau.
+
+(On entend un bruit de réveil, une machine qui s’active, un ventilateur qui tourne.)
+
+(L’écran s’illumine : Vue subjective d’une interface, affichant une silhouette en contre-jour.)
+
+📌 Scène cinématique animée :
+
+L’héroïne, Unit A-1N, se réveille au cœur d’une cité en ruine envahie par la nature.
+Elle voit des bâtiments effondrés, des forêts qui ont repris leurs droits sur les rues.
+Des lumières rouges s’allument au loin : des drones de sécurité corrompus s’activent et patrouillent.
+Elle touche son torse : un symbole gravé dans son châssis brille faiblement (représente son lien avec son âme humaine).
+2. Première interaction - Tutoriel
+(Elle active son interface interne, une voix lui parle dans sa tête : une voix féminine, fragile, humaine.)
+
+💬 Voix intérieure (IA/humaine en elle) :
+
+"Où… où suis-je ? Qui… suis-je ?"
+"Pourquoi… suis-je seule ?"
+
+📌 Première mission : Se déplacer, scanner l’environnement.
+
+Interface minimaliste, HUD affichant une carte endommagée.
+Un drone ennemi apparaît, elle prend automatiquement une pose défensive.
+Un ancien fichier de combat s’ouvre :
+🎮 Tutoriel combat → Attaque, Esquive, Surcharge (pouvoir spécial).
+Elle utilise son bras-canon intégré pour neutraliser le drone.
+3. Histoire principale - Objectif du jeu
+📜 Contexte :
+
+L’humanité a presque disparu, balayée par une catastrophe inconnue.
+La nature et une force magique étrange ont repris le monde.
+Les machines de défense, comme elle, sont devenues hors de contrôle, sauf elle.
+Les humains survivants se cachent, terrorisés par les robots.
+Elle doit retrouver les survivants et leur redonner espoir, tout en découvrant la vérité sur son origine.
+📌 Gameplay Roguelike :
+
+Exploration procédurale → Chaque partie du monde est générée différemment.
+Ennemis : Drones de sécurité corrompus, créatures mutantes nées de la magie.
+Système d’amélioration : Récupérer des morceaux de mémoire pour débloquer des capacités.
+4. Exemple de mission / Dialogue
+🎮 Mission : Entrer dans un bunker humain abandonné
+(Elle ouvre la porte d’un bunker, intérieur sombre, bruits de pas furtifs.)
+
+💬 Héroïne - Unit A-1N :
+
+"Analyse en cours… Traces d’activité récente. Humains détectés ?"
+
+💬 Survivant (en tremblant, arme levée) :
+
+"Recule ! Je sais ce que vous êtes ! Vous nous avez exterminés !"
+
+💬 Héroïne - Unit A-1N :
+
+"Erreur. Directive de défense prioritaire : Protection des civils. Je ne suis pas votre ennemie."
+
+💬 Survivant :
+
+"Comment je peux te faire confiance ? Les autres androïdes nous traquent !"
+
+(À ce moment-là, choix du joueur : pacifier ou utiliser la force.)
+
+🟢 Option diplomatique → "Mon objectif est de restaurer ce qui a été perdu."
+🔴 Option intimidation → "Je suis la seule chance qu’il vous reste."
+
+5. Progression et Fin du jeu
+📌 Système de progression :
+
+Chaque run permet de récupérer de la mémoire, débloquant des morceaux du passé.
+À mesure qu’elle retrouve ses souvenirs, on découvre qui elle était avant (peut-être une humaine transférée dans ce corps mécanique).
 
 ////
 
@@ -186,14 +269,18 @@ Conception des systèmes de génération procédurale pour les niveaux.
 ## Tâches :
 
 Conception des sprites des personnages et des ennemis.
-Création des animations (mouvements, attaques, parry, etc.).
-Conception des décors et des effets visuels.
+Création des animations.
+Conception des décors.
 Réalisation des interfaces utilisateur (UI).
-Création des assets graphiques pour les menus et les écrans de jeu.
+Creation du cinematic.py
+Creation du game.py
 
 ### Développeur 4 (Sacha) : Son et musique
 ## Tâches :
-Conception des effets sonores (attaques, parry, capacités, etc.).
+Conception des effets sonores
 Création de la musique d'ambiance.
 Intégration des sons et de la musique dans le jeu.
-Ajustement des niveaux sonores pour une expérience immersive.
+Creation des Menu
+Implementations des Mouvements du personnage
+Implementations des Armes
+Concept Art

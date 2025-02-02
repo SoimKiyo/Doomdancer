@@ -33,6 +33,7 @@ class Player:
         self.action = "idle"
         self.update_time = pygame.time.get_ticks()  # Temps de mise à jour de l'animation
         self.running = False
+        self.is_attacking = False
         self.image = self.animation_list[self.action][self.frame_index]
         # Rectangle du joueur
         self.rect = pygame.Rect(x, y, width, height)
@@ -42,6 +43,14 @@ class Player:
         # Création d'une hitbox
         self.hitbox = pygame.Rect(0, 0, width - 10, height - 10)
         self.hitbox.center = self.rect.center
+
+        self.hide_weapon = False
+        
+        # Vie du joueur
+        self.max_health = 100  # Vie maximale
+        self.health = self.max_health  # Vie actuelle
+        self.is_invincible = False  # Empêche les dégâts en boucle
+        self.invincibility_timer = 0  # Temps d'invincibilité après un coup
 
         # Pour mémoriser la dernière direction de déplacement (normalisée)
         self.last_dx = 0
@@ -141,8 +150,17 @@ class Player:
             self.rect.top = SCROLL_THRESH
 
         return screen_scroll
+    
+    def take_damage(self, damage):
+        if not self.is_invincible:
+            self.health -= damage
+            if self.health < 0:
+                self.health = 0  # Empêche la vie d'aller en dessous de 0
+            self.is_invincible = True
+            self.invincibility_timer = pygame.time.get_ticks()
 
     def update(self):
+        current_time = pygame.time.get_ticks()
         animation_cooldown = 60 # Temps entre chaque frame
         if self.running:
             self.update_action("run")
@@ -152,11 +170,14 @@ class Player:
             animation_cooldown = 60
 
         self.image = self.animation_list[self.action][self.frame_index]
-        if pygame.time.get_ticks() - self.update_time > animation_cooldown: # Changer de frame en fonction du cooldown
+        if current_time - self.update_time > animation_cooldown: # Changer de frame en fonction du cooldown
             self.frame_index += 1
-            self.update_time = pygame.time.get_ticks()
+            self.update_time = current_time
         if self.frame_index >= len(self.animation_list[self.action]):
             self.frame_index = 0
+        
+        if self.is_invincible and current_time - self.invincibility_timer > 1000:
+            self.is_invincible = False  # Désactive l'invincibilité après 1 seconde
 
     def update_action(self, new_action):
         if new_action != self.action:

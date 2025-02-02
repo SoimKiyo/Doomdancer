@@ -1,9 +1,9 @@
 import pygame
 from player import Player, player_animations, scale_img
 from constants import *
-from weapon import Weapon
+from weapon import Weapon, MeleeAttack
 from enemy import Enemy, enemy_animations
-from ui import DamageText
+from ui import DamageText, HealthBar
 from map import World, world_data, tile_list
 
 # Arme du joueur
@@ -36,6 +36,7 @@ class Game:
         # Création du joueur
         self.player_animations = player_animations()
         self.player = Player(screen_width // 2, screen_height // 2, TILE_SIZE, TILE_SIZE, self.player_animations)
+        self.health_bar = HealthBar(20, 20, 200, 20, self.player)  # Barre de vie en haut à gauche
 
         # Création d'un ennemi
         self.mob_animations = enemy_animations()
@@ -46,6 +47,8 @@ class Game:
 
         # Arme
         self.weapon = Weapon(weapon_images("basicgun"), self.joysticks, weapon_images("projectile"))
+        self.melee_attack = MeleeAttack(self.joysticks, damage_text_group)
+
 
         # Couleurs du décor
         self.background_color = BLACK
@@ -64,6 +67,9 @@ class Game:
         self.screen_scroll = self.player.move(keys, self.screen_rect, self.weapon)
         screen_scroll = self.player.move(keys, self.screen_rect, self.weapon)
         self.world.update(screen_scroll)
+
+        # Mise à jour de l'attaque melee
+        self.melee_attack.update(self.player, self.enemy_list)
 
         # Joueur
         self.player.update()
@@ -93,9 +99,10 @@ class Game:
 
         # Joueur
         self.player.draw(screen)  # Dessine le joueur
+        self.health_bar.draw(screen)  # Dessine la barre de vie
 
         # Arme
-        self.weapon.draw(screen) # Dessine l'arme
+        self.weapon.draw(screen, self.player) # Dessine l'arme
 
         # Enemie
         for enemy in self.enemy_list: # Dessine l'ennemi à l'écran
