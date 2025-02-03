@@ -49,6 +49,7 @@ class Player:
         # Vie du joueur
         self.max_health = 100  # Vie maximale
         self.health = self.max_health  # Vie actuelle
+        self.alive = True
         self.is_invincible = False  # Empêche les dégâts en boucle
         self.invincibility_timer = 0  # Temps d'invincibilité après un coup
 
@@ -69,6 +70,9 @@ class Player:
         print(f"Fragments collectés: {self.coins}")  # Affichage du compteur dans la console
 
     def move(self, keys, screen_rect, weapon, obstacle_tiles, exit_tile):
+        if self.alive == False:  # Si le joueur est mort, il ne peut pas bouger
+            return [0, 0], False
+    
         screen_scroll = [0, 0]
         level_complete = False
         self.running = False
@@ -184,6 +188,7 @@ class Player:
             self.health -= damage
             if self.health < 0:
                 self.health = 0  # Empêche la vie d'aller en dessous de 0
+                self.alive = False
             self.is_invincible = True
             self.invincibility_timer = pygame.time.get_ticks()
 

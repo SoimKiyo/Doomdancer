@@ -1,4 +1,5 @@
 import pygame
+from constants import *
 
 # Classe de dégats (Affiche un texte quand il y a des dégâtes fait sur l'ennemie)
 class DamageText(pygame.sprite.Sprite):
@@ -23,6 +24,7 @@ class DamageText(pygame.sprite.Sprite):
         if self.counter > 30:
             self.kill()
 
+# Classe de la bar de vie du joueur
 class HealthBar:
     def __init__(self, x, y, width, height, player):
         self.x = x
@@ -36,3 +38,25 @@ class HealthBar:
         pygame.draw.rect(screen, (150, 0, 0), (self.x, self.y, self.width, self.height))  # Fond rouge
         pygame.draw.rect(screen, (0, 255, 0), (self.x, self.y, self.width * health_ratio, self.height))  # Vie verte
         pygame.draw.rect(screen, (255, 255, 255), (self.x, self.y, self.width, self.height), 2)  # Bordure blanche
+
+# Classe d'animation de transition entre niveau
+class ScreenFade():
+    def __init__(self, direction, color, speed):
+        self.direction = direction
+        self.color = color
+        self.speed = speed
+        self.fade_counter = 0
+    
+    def fade(self, screen):
+        fade_complete = False
+        self.fade_counter += self.speed
+        if self.direction == 1:
+            pygame.draw.rect(screen, self.color, (0 - self.fade_counter, 0, SCREEN_WIDTH // 2, SCREEN_HEIGHT))
+            pygame.draw.rect(screen, self.color, (SCREEN_WIDTH // 2 + self.fade_counter, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+            pygame.draw.rect(screen, self.color, (0, 0 -self.fade_counter, SCREEN_WIDTH, SCREEN_HEIGHT // 2))
+            pygame.draw.rect(screen, self.color, (0, SCREEN_HEIGHT // 2 + self.fade_counter, SCREEN_WIDTH, SCREEN_HEIGHT))
+        
+        if self.fade_counter >= SCREEN_WIDTH:
+            fade_complete = True
+
+        return fade_complete

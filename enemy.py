@@ -72,52 +72,49 @@ class Enemy:
             self.move_towards_target()
 
     def move_towards_target(self):
-        target_x, target_y = self.target.rect.center
-        dx, dy = target_x - self.rect.centerx, target_y - self.rect.centery
-        distance = max(abs(dx), abs(dy))
-
-    def move_towards_target(self):
+        if self.target and self.alive:  # Vérifier que l'ennemi et le joueur sont en vie
             target_x, target_y = self.target.rect.center
             dx, dy = target_x - self.rect.centerx, target_y - self.rect.centery
             distance = max(abs(dx), abs(dy))
 
+            # Vérifier si l'ennemi a attaqué récemment
             if self.has_attacked:
                 if self.attack_timer and self.attack_timer.is_finished():
-                    self.has_attacked = False
+                    self.has_attacked = False  # Réinitialiser l'état d'attaque
 
-                direction_x = dx / distance if distance != 0 else 1
-                direction_y = dy / distance if distance != 0 else 0
-                move_speed = -self.speed * 2
+            # Si l'ennemi est à portée d'attaque
+            if distance < 30 and not self.has_attacked:
+                self.attack()
 
-                self.rect.x += move_speed * direction_x
-                self.rect.y += move_speed * direction_y
-                self.flip = direction_x < 0
-                self.update_action("run")
-            
+            # Si l'ennemi doit se déplacer vers le joueur
             elif distance > 0:
-                direction_x = dx / distance
-                direction_y = dy / distance
+                direction_x = dx / distance if distance != 0 else 0
+                direction_y = dy / distance if distance != 0 else 0
 
+                # Ajuster la vitesse en fonction de la distance
                 if distance > 150:
                     move_speed = self.speed
                 elif distance > 50:
                     move_speed = self.speed * 1.5
                 else:
-                    move_speed = self.speed * 2
-                    self.attack()
-                
+                    move_speed = self.speed * 2  # Sprint si proche
+
                 self.rect.x += move_speed * direction_x
                 self.rect.y += move_speed * direction_y
                 self.flip = direction_x < 0
                 self.update_action("run")
             else:
-                self.update_action("idle")
-    
+                self.update_action("idle")  # Met en idle si aucun mouvement
+
     def attack(self):
-        print("Enemy attacks!")
-        self.attack_timer = Timer(3000)
-        self.attack_timer.start()
-        self.has_attacked = True
+        if self.target.alive:  # Vérifie que le joueur est en vie avant d'attaquer
+            print("L'ennemi attaque !")
+            self.target.take_damage(10)  # Inflige 10 points de dégâts au joueur
+            self.has_attacked = True
+            self.attack_timer = Timer(2000)  # Attente de 2 secondes avant une nouvelle attaque
+            self.attack_timer.start()
+            self.update_action("idle")  # Passe en idle après l'attaque
+
         
         
     # Fonction pour gérer l'animation
