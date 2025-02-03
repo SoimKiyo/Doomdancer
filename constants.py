@@ -37,7 +37,7 @@ screen_scroll = [0, 0]  # Stocke le décalage du scrolling en (x, y)
 
 ## Paramètres de la carte
 TILE_SIZE = 24 * SCALE  # Taille des tiles en pixels après mise à l'échelle
-TILE_TYPES = 15  # Nombre total de types de tiles
+TILE_TYPES = 52  # Nombre total de types de tiles
 ROWS = 16  # Nombre de lignes dans la carte (Fichier CSV)
 COLS = 150  # Nombre de colonnes dans la carte (Fichier CSV)
 

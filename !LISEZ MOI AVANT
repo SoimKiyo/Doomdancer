@@ -14,7 +14,7 @@ ui.py # Interactif utilisateur (HUD)
 Deplacement dans le menu avec les joystick possible
 quand on arrive au derniere selection du menu on peut pas redescendre pour revenir au depart
 
-B/RL pour la roulade / Clique droit
+B/RL pour la roulade / Espace
 X pour recharge / R
 Tirer RB / Clique Gauche
 Le curseur peut aller n'importe ou et fait bouger la camera
@@ -32,7 +32,7 @@ Semaine 1 : Ajout de toutes les bases
 // - Arme et melee
 // - Menu
 - Systeme de vie et mort/respawn
-- Pieces et le shop + PNJ
+- Pieces (Fragments de memoire) drop par les ennemies
 - Polissage et reorganisation en fin de semaine
 
 Semaine 2 : Ajout des mecaniques complexes
@@ -61,10 +61,10 @@ Semaine 3 : Finalisation
 - 2D
 - Roguelite (donc boss a la fin)
 - Vue du dessus
-- Simple mais propre / Ambiance sombre
+- Simple mais propre
 - Chill gameplay pas trop de bullet/ennemies
 - Ameliorations au respawn
-- Medieval / Fantasique en interieur
+- Futuriste / Fantasique
 - Mouvement libre
 - Bullet game allégé
 
@@ -73,13 +73,13 @@ le jeu se ralentie (ou s'arrette) et le fond se noirci, le system permet de one 
 et quand on one shot on se fait "propulser" en arriere a la fin et si on rate on se prend
 un degat de l'ennemie (Le system est assez rapide en soit pour perfect)
 
-- Une ability de base ou tu peut te mettre en ombre tu peux pas te faire voir/te faire toucher // On le débloque apres le tuto
+- Une ability de base ou tu peut dash tu peux pas te faire toucher // On le débloque apres le tuto
 
-- La monnaie c'est les âmes érantes
+- La monnaie c'est les morceau de mémoire
  
-  1. Armes de Mêlée + Projectiles Spirituels (Mode Alternatif)
+  1. Armes de Mêlée + Projectiles (Mode Alternatif)
 Concept :
-Le joueur attaque en mêlée, mais lorsqu'il réussit un perfect parry, il gagne une charge de projectile spirituel qu'il peut tirer ensuite.
+Le joueur attaque en mêlée, mais lorsqu'il réussit un perfect parry, il gagne une charge d'arme qu'il peut tirer ensuite.
 
 🔥 2. Ajout d’un Système de "Lien Spirituel"
 Plutôt que de faire des projectiles classiques, le joueur peut marquer un ennemi en mêlée et lui envoyer une attaque à distance après coup.
