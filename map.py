@@ -28,6 +28,7 @@ with open(f"levels/level{level}_data.csv", newline="") as csvfile:
         for y, tile in enumerate(row):
             world_data[x][y] = int(tile)
 
+
 # Classe pour la map
 class World():
     def __init__(self):

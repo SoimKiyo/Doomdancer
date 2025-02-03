@@ -52,6 +52,8 @@ class Player:
         self.is_invincible = False  # Empêche les dégâts en boucle
         self.invincibility_timer = 0  # Temps d'invincibilité après un coup
 
+        self.coins = 0
+
         # Pour mémoriser la dernière direction de déplacement (normalisée)
         self.last_dx = 0
         self.last_dy = 0
@@ -62,8 +64,13 @@ class Player:
     def update_screen_limits(self, screen_width, screen_height):
         self.screen_rect = pygame.Rect(0, 0, screen_width, screen_height)
 
-    def move(self, keys, screen_rect, weapon, obstacle_tiles):
+    def collect_coin(self):
+        self.coins += 1
+        print(f"Fragments collectés: {self.coins}")  # Affichage du compteur dans la console
+
+    def move(self, keys, screen_rect, weapon, obstacle_tiles, exit_tile):
         screen_scroll = [0, 0]
+        level_complete = False
         self.running = False
 
         # Entrées clavier (ZQSD/Flèches directionnel)
@@ -151,6 +158,11 @@ class Player:
         # Mise à jour de la hitbox pour qu'elle suive le joueur
         self.hitbox.center = self.rect.center
 
+        # Vérifier la collission avec l'élément permettant de changer de niveau
+        if exit_tile[1].colliderect(self.rect):
+            # Vérifier que le joueur est assez proche
+            level_complete = True
+
         # Défilement de l'écran en fonction de la position du joueur
         if self.rect.right > (SCREEN_WIDTH - SCROLL_THRESH):
             screen_scroll[0] = (SCREEN_WIDTH - SCROLL_THRESH) - self.rect.right
@@ -165,7 +177,7 @@ class Player:
             screen_scroll[1] = SCROLL_THRESH - self.rect.top
             self.rect.top = SCROLL_THRESH
 
-        return screen_scroll
+        return screen_scroll, level_complete
     
     def take_damage(self, damage):
         if not self.is_invincible:

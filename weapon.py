@@ -207,7 +207,7 @@ class MeleeAttack:
 
         self.damage_text_group = damage_text_group
 
-    def update(self, player, enemy_list):
+    def update(self, player, enemy_list, coins_group):
         current_time = pygame.time.get_ticks()
         melee_trigger = False
 
@@ -245,7 +245,7 @@ class MeleeAttack:
             # On vérifie la collision avec chaque ennemi
             for enemy in enemy_list:
                 if enemy.alive and melee_rect.colliderect(enemy.rect):
-                    enemy.take_damage(self.damage)
+                    enemy.take_damage(self.damage, coins_group)
                     damage_text = DamageText(enemy.rect.centerx, enemy.rect.y - 20, str(self.damage), RED, [0, 0])
                     self.damage_text_group.add(damage_text)
 

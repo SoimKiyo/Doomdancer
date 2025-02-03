@@ -4,7 +4,8 @@ from constants import *
 from weapon import Weapon, MeleeAttack
 from enemy import Enemy, enemy_animations
 from ui import DamageText, HealthBar
-from map import World, world_data, tile_list
+from map import World, world_data, tile_list, level
+import csv 
 
 # Arme du joueur
 def weapon_images(element):
@@ -17,6 +18,21 @@ def weapon_images(element):
 
 projectile_group = pygame.sprite.Group()
 damage_text_group = pygame.sprite.Group()
+coins_group = pygame.sprite.Group()
+
+# Fonction pour remettre à zéro le niveau
+def reset_level():
+    damage_text_group.empty()
+    projectile_group.empty()
+    coins_group.empty()
+
+    # Créer une liste de tile vide
+    data = []
+    for row in range(ROWS):
+        r= [-1]*COLS
+        data.append(r)
+
+    return data
 
 # Classe du jeu
 class Game:
@@ -63,13 +79,26 @@ class Game:
 
     # Met a jour les éléments du jeu (comme le joueur)
     def update(self, keys):
+        global level, world_data
         # Screen scroll
-        self.screen_scroll = self.player.move(keys, self.screen_rect, self.weapon, self.world.obstacle_tiles)
-        screen_scroll = self.player.move(keys, self.screen_rect, self.weapon, self.world.obstacle_tiles)
+        screen_scroll, level_complete = self.player.move(keys, self.screen_rect, self.weapon, self.world.obstacle_tiles, self.world.exit_tile)
+        self.screen_scroll = screen_scroll
         self.world.update(screen_scroll)
+        
+        # Mise à jour du Niveau
+        if level_complete and len(self.enemy_list) == 0:
+            level += 1
+            world_data = reset_level()
+            with open(f"levels/level{level}_data.csv", newline="") as csvfile:
+                reader = csv.reader(csvfile, delimiter=",")
+                for x, row in enumerate(reader):
+                    for y, tile in enumerate(row):
+                        world_data[x][y] = int(tile)
+            self.world = World()
+            self.world.process_data(world_data, tile_list)
 
         # Mise à jour de l'attaque melee
-        self.melee_attack.update(self.player, self.enemy_list)
+        self.melee_attack.update(self.player, self.enemy_list, coins_group)
 
         # Joueur
         self.player.update()
@@ -88,7 +117,11 @@ class Game:
 
         # Enemies
         for enemy in self.enemy_list:
+            if not enemy.alive:
+                enemy.take_damage(0, coins_group)  # Drop des fragments
+                self.enemy_list.remove(enemy)
             enemy.update()
+        coins_group.update(self.screen_scroll, self.player)
 
     # Dessine et affiche les éléments du jeu
     def draw(self, screen):
@@ -113,6 +146,9 @@ class Game:
         for projectile in projectile_group: # Dessine les flèches
             projectile.draw(screen)
         damage_text_group.draw(screen)
+
+        coins_group.draw(screen)
+
 
     # Réinitialise le jeu
     def reset(self):

@@ -2,6 +2,8 @@ import pygame
 from constants import *
 from player import scale_img
 from timer import *
+from items import Coin
+import random
 
 # Fonction pour charger les animations
 def enemy_animations():
@@ -48,13 +50,16 @@ class Enemy:
         self.attack_timer = None
 
     #fonction pour faire des dégats à l'ennemie
-    def take_damage(self, damage):
+    def take_damage(self, damage, coins_group):
 
         self.health -= damage #fais des dégats à l'ennemie
 
         # Vérifier si l'ennemie n'as plus de vie
         if self.health <= 0:
             self.alive = False
+            for _ in range(random.randint(1, 3)):
+                coin = Coin(self.rect.centerx, self.rect.centery)
+                coins_group.add(coin)
 
     def set_target(self, player):
         self.target = player
