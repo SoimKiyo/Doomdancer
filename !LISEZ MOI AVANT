@@ -20,9 +20,6 @@ Tirer RB / Clique Gauche
 Le curseur peut aller n'importe ou et fait bouger la camera
 Auto reload
 
-Quand on tourne le joueur sa tourne tout le joueur et l'arme
-Quand ou tourne l'arme sa tourne tout sauf la direction
-
 # Roadmap
 Semaine 1 : Ajout de toutes les bases
 - Sprites
@@ -31,7 +28,7 @@ Semaine 1 : Ajout de toutes les bases
 // - Joueur et ses deplacements
 // - Arme et melee
 // - Menu
-- Systeme de vie et mort/respawn
+// - Systeme de vie et mort/respawn
 // - Pieces (Fragments de memoire) drop par les ennemies
 - Polissage et reorganisation en fin de semaine
 

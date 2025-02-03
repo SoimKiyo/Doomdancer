@@ -30,6 +30,13 @@ class Weapon():
         self.crosshair_image = pygame.image.load("assets/images/weapons/crosshair.png").convert_alpha()  # Charge l'image du crosshair
         self.crosshair_pos = pygame.mouse.get_pos()
         self.use_crosshair = True
+
+        # Munitions et rechargement
+        self.max_ammo = 20  # Munitions maximales
+        self.ammo = self.max_ammo  # Munitions actuelles
+        self.reloading = False
+        self.reload_time = 1500  # Temps de rechargement en millisecondes
+        self.last_reload = pygame.time.get_ticks()
         
 
     def update(self, player):
@@ -114,27 +121,63 @@ class Weapon():
             self.rect.center = (player.rect.centerx - WEAPON_OFFSET_X, player.rect.centery + WEAPON_OFFSET_Y)
         else:
             self.rect.center = (player.rect.centerx + WEAPON_OFFSET_X, player.rect.centery + WEAPON_OFFSET_Y)
+        
 
-        # Tir avec la manette
+        # Rechargement
+        if self.reloading and current_time - self.last_reload >= self.reload_time:
+            self.ammo = self.max_ammo
+            self.reloading = False
+            print("Rechargement terminé")
+
+        if  pygame.key.get_pressed()[pygame.K_r]:  # Clavier (touche R)
+            current_time = pygame.time.get_ticks()
+            if not self.reloading and self.ammo < self.max_ammo:
+                print("Rechargement...")
+                self.reloading = True
+                self.last_reload = current_time
+
         for joystick in self.joysticks:
-            if joystick.get_numbuttons() > 5:
-                rb_pressed = joystick.get_button(5) # Bouton RB
-                if rb_pressed and not self.fired_joystick and (current_time - self.last_shot >= shot_cooldown):
-                    projectile = Projectile(self.projectile_image, self.rect.centerx, self.rect.centery, self.angle)
-                    self.fired_joystick = True
-                    self.last_shot = current_time
-                if not rb_pressed:
-                    self.fired_joystick = False
+            if joystick.get_numbuttons() > 2:
+                x_pressed = joystick.get_button(2)  # Bouton X
+                if x_pressed:
+                    current_time = pygame.time.get_ticks()
+                    if not self.reloading and self.ammo < self.max_ammo:
+                        print("Rechargement...")
+                        self.reloading = True
+                        self.last_reload = current_time
 
-        # Tir avec la souris
-        if pygame.mouse.get_pressed()[0] and not self.fired and (current_time - self.last_shot >= shot_cooldown): # Clique gauche
-            projectile = Projectile(self.projectile_image, self.rect.centerx, self.rect.centery, self.angle)
-            self.fired = True
-            self.last_shot = current_time
-        if not pygame.mouse.get_pressed()[0]:
-            self.fired = False
+        if self.ammo > 0 and self.reloading == False:
+            # Tir avec la manette
+            for joystick in self.joysticks:
+                if joystick.get_numbuttons() > 5:
+                    rb_pressed = joystick.get_button(5) # Bouton RB
+                    if rb_pressed and not self.fired_joystick and (current_time - self.last_shot >= shot_cooldown):
+                        projectile = Projectile(self.projectile_image, self.rect.centerx, self.rect.centery, self.angle)
+                        self.fired_joystick = True
+                        self.last_shot = current_time
+                        self.ammo -= 1
+                        print(f"Il reste {self.ammo} munitions")
+                    if not rb_pressed:
+                        self.fired_joystick = False
 
+            # Tir avec la souris
+            if pygame.mouse.get_pressed()[0] and not self.fired and (current_time - self.last_shot >= shot_cooldown): # Clique gauche
+                projectile = Projectile(self.projectile_image, self.rect.centerx, self.rect.centery, self.angle)
+                self.fired = True
+                self.last_shot = current_time
+                self.ammo -= 1
+                print(f"Il reste {self.ammo} munitions")
+            if not pygame.mouse.get_pressed()[0]:
+                self.fired = False
+
+        # Rechargement automatique
+        if self.ammo <= 0 and self.reloading == False and (self.fired_joystick or self.fired):
+            print("Rechargement...")
+            self.reloading = True
+            self.last_reload = current_time
+            
         return projectile
+
 
     def draw(self, surface, player):
         if player.hide_weapon:
