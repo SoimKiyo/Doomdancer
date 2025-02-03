@@ -62,7 +62,7 @@ class Player:
     def update_screen_limits(self, screen_width, screen_height):
         self.screen_rect = pygame.Rect(0, 0, screen_width, screen_height)
 
-    def move(self, keys, screen_rect, weapon):
+    def move(self, keys, screen_rect, weapon, obstacle_tiles):
         screen_scroll = [0, 0]
         self.running = False
 
@@ -128,9 +128,25 @@ class Player:
             dx = norm_dx * self.speed
             dy = norm_dy * self.speed
 
-        # Appliquer le déplacement
+        # Appliquer le déplacement et regarder les collisions
         self.rect.x += dx
+        for obstacle in obstacle_tiles:
+            # Regarder les collisions
+            if obstacle[1].colliderect(self.rect):
+                # Regarder de qu'elle côté et la collision
+                if dx > 0:
+                    self.rect.right = obstacle[1].left
+                if dx < 0:
+                    self.rect.left = obstacle[1].right
         self.rect.y += dy
+        for obstacle in obstacle_tiles:
+            # Regarder les collisions
+            if obstacle[1].colliderect(self.rect):
+                # Regarder de qu'elle côté et la collision
+                if dy > 0:
+                    self.rect.bottom = obstacle[1].top
+                if dy < 0:
+                    self.rect.top = obstacle[1].bottom
 
         # Mise à jour de la hitbox pour qu'elle suive le joueur
         self.hitbox.center = self.rect.center

@@ -64,8 +64,8 @@ class Game:
     # Met a jour les éléments du jeu (comme le joueur)
     def update(self, keys):
         # Screen scroll
-        self.screen_scroll = self.player.move(keys, self.screen_rect, self.weapon)
-        screen_scroll = self.player.move(keys, self.screen_rect, self.weapon)
+        self.screen_scroll = self.player.move(keys, self.screen_rect, self.weapon, self.world.obstacle_tiles)
+        screen_scroll = self.player.move(keys, self.screen_rect, self.weapon, self.world.obstacle_tiles)
         self.world.update(screen_scroll)
 
         # Mise à jour de l'attaque melee

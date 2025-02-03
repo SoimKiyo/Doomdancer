@@ -15,7 +15,7 @@ def map_sprites():
         tile_list.append(tile_image)
 
 # Variable du niveau à charger
-level = 1
+level = 0
 
 # Données de la map
 world_data = []
@@ -32,6 +32,8 @@ with open(f"levels/level{level}_data.csv", newline="") as csvfile:
 class World():
     def __init__(self):
         self.map_tiles = []
+        self.obstacle_tiles = []
+        self.exit_tile = None
 
     def process_data(self, data, tile_list):
         self.level_lengh = len(data)
@@ -44,6 +46,11 @@ class World():
                 image_y = y * TILE_SIZE
                 image_rect.center = (image_x, image_y)
                 tile_data = [image, image_rect, image_x, image_y]
+
+                if tile in [29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45]:
+                    self.obstacle_tiles.append(tile_data)
+                elif tile == 28:
+                    self.exit_tile = tile_data
 
                 # Ajouter l'image data à la liste des tiles
                 if tile >= 0:
