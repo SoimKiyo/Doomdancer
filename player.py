@@ -54,7 +54,7 @@ class Player:
         self.is_invincible = False  # Empêche les dégâts en boucle
         self.invincibility_timer = 0  # Temps d'invincibilité après un coup
 
-        self.coins = 0
+        self.coins = 100
 
         # Pour mémoriser la dernière direction de déplacement (normalisée)
         self.last_dx = 0
@@ -228,15 +228,20 @@ class Player:
 
 
 class PowerUP:
-    def __init__(self, activepowerups):
+    def __init__(self, player, activepowerups):
+        self.player = player
         self.activepowerups = activepowerups
+        self.apply_powerups()  # Appliquer immédiatement les effets
 
-    def speed_powerup(self):
+    def apply_powerups(self):
+        """Applique les power-ups actifs au joueur"""
         if "speed" in self.activepowerups:
-            self.player.speed = PLAYER_SPEED * 2
-        else : 
-            self.player.speed = PLAYER_SPEED
+            self.player.speed = PLAYER_SPEED * 2  # Double la vitesse du joueur
+        else:
+            self.player.speed = PLAYER_SPEED  # Remet la vitesse normale
+
         if "heal" in self.activepowerups:
-            self.player.max_health = 200
-        else :
-            self.player.max_health = 100
+            self.player.max_health = 200  # Augmente la vie max
+            self.player.health = min(self.player.health + 50, self.player.max_health)  # Ajoute 50 PV sans dépasser max
+        else:
+            self.player.max_health = 100  # Remet la vie max normale

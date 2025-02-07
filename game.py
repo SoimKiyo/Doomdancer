@@ -75,6 +75,11 @@ class Game:
         self.poweruplist = ["speed", "heal"]
         self.activepowerups = []
         self.requirement = 10
+        self.powerup_screen_active = False  # Pour bloquer le jeu pendant la sélection du power-up
+        self.current_powerup = None  # Stocke le power-up sélectionné
+        self.powerup_screen = None  # L'objet écran du power-up
+        self.powerup_granted = False  # Indique si le power-up a été donné pour éviter les doublons
+
 
 
         # Couleurs du décor
@@ -119,7 +124,7 @@ class Game:
 
             # Joueur
             self.player.update()
-            PowerUP(self.activepowerups)
+            self.powerup_system = PowerUP(self.player, self.activepowerups)
 
             # Projectile
             projectile = self.weapon.update(self.player)
@@ -141,8 +146,25 @@ class Game:
                 enemy.update()
             coins_group.update(self.screen_scroll, self.player)
         else:
-            # Si le joueur est mort on réinitialise
-            self.restart_game()
+            if not self.player.alive and not self.powerup_granted:  # Vérifie que le power-up n'a pas été accordé
+                if self.player.coins >= self.requirement and not self.powerup_screen_active:
+                    self.requirement += 10
+                    self.player.coins -= 10
+                    self.current_powerup = choice(self.poweruplist)
+                    self.activepowerups.append(self.current_powerup)
+                    self.powerup_screen = PowerupScreen(self.current_powerup, self.font)
+                    self.powerup_screen_active = True
+                    self.powerup_granted = True  # Marque que le power-up a été accordé une seule fois
+
+
+            # Tant que l'écran du power-up est actif, empêcher le jeu de continuer
+            if self.powerup_screen_active:
+                return  # Empêcher toute mise à jour tant que l’écran est actif
+
+            # Si le power-up a été choisi et l'écran fermé, appliquer le power-up et relancer le jeu
+            if not self.powerup_screen_active and self.powerup_screen is None:
+                self.powerup_system = PowerUP(self.player, self.activepowerups)
+                self.restart_game()
 
     # Dessine et affiche les éléments du jeu
     def draw(self, screen):
@@ -176,15 +198,21 @@ class Game:
                 self.start_intro = False
                 self.intro_fade.fade_counter = 0
         
-        # Ecran de Powerup
-        if self.player.coins >= self.requirement and self.player.alive == False: # Si le joueur a suffisament de piece et n'est pas en vie
-            self.requirement += 10 # Augment la somme nécéssaire
-            self.player.coins -= 10 # Retire les pieces du joueurs
-            if self.poweruplist:
-                selected_powerup = choice(self.poweruplist) # Choisis aléatoirement un powerup de la liste
-                self.activepowerups.append(selected_powerup) # Ajoute le powerup dans la liste des powerup actif
-                PowerupScreen(self.activepowerups, self.font)
+        # Dessiner l'écran de power-up s'il est actif
+        if self.powerup_screen_active and self.powerup_screen:
+            self.powerup_screen.draw(screen)
         
+    def handle_input(self, event):
+        if self.powerup_screen_active and self.powerup_screen:
+            if self.powerup_screen.handle_input(event):
+                self.powerup_screen_active = False
+                self.powerup_screen = None
+                self.powerup_system = PowerUP(self.player, self.activepowerups)  # Appliquer le power-up
+                self.powerup_granted = False  # Réinitialise pour le prochain death
+                self.restart_game()  # Relancer la partie
+
+
+
         
     # Relancer la partie
     def restart_game(self):
@@ -212,7 +240,6 @@ class Game:
         enemy = Enemy(self.screen_width // 4, self.screen_height // 4, ENEMY_WIDTH, ENEMY_HEIGHT, ENEMY_HEALTH, enemy_animations(), 1)
         enemy.set_target(self.player)
         self.enemy_list.append(enemy)
-
 
     # Réinitialise le jeu
     def reset(self):

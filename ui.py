@@ -63,35 +63,43 @@ class ScreenFade():
 
 # Classe pour afficher l'écran des PowerUp
 class PowerupScreen:
-    def __init__(self, powerup):
+    def __init__(self, powerup, font):
         self.powerup = powerup
         self.powerup_image = pygame.image.load(f"assets/images/ui/powerup/card_{self.powerup}.png").convert_alpha()
-        self.card_y = SCREEN_HEIGHT # Position initiale de la carte en dehors de l'écran
+        self.card_y = SCREEN_HEIGHT  # Position initiale de la carte en dehors de l'écran
         self.card_target_y = SCREEN_HEIGHT // 2 - self.powerup_image.get_height() // 2
-        self.animation_speed = 10 # Vitesse du mouvement de l'animation
+        self.animation_speed = 10  # Vitesse du mouvement de l'animation
 
         self.animation_complete = False
+        self.font = font
+        self.done = False  # Indique si l'écran a été fermé
 
     def handle_input(self, event):
-        if self.animation_done and event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
-                return True
+        """Ferme l'écran si le joueur appuie sur A"""
+        if self.animation_complete and event.type == pygame.KEYDOWN and event.key == pygame.K_a:
+            self.done = True  # Fermer l’écran
+            return True
         return False
     
     def animate_card(self):
+        """Animation de l'apparition de la carte"""
         if self.card_y > self.card_target_y:
             self.card_y -= self.animation_speed
         else:
             self.animation_complete = True
     
-    def animation(self):
-        self.screen.fill(BLACK) # Fond noir
+    def draw(self, screen):
+        screen.fill(BLACK)  # Fond noir
 
-        # Affiche l'image du powerup
-        if self.card_y > self.card_target_y:
+        # Animation d'apparition
+        if not self.animation_complete:
             self.animate_card()
-        self.screen.blit(self.powerup_image, (SCREEN_WIDTH // 2 - self.powerup_image.get_width() // 2, self.card_y))
 
-        # Affiche le texte et le bouton des entrés en bas de l'écran
-        button_text = self.font.render("Passer", True, WHITE)
-        button_rect = button_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 50))
+        # Affichage du power-up
+        screen.blit(self.powerup_image, (SCREEN_WIDTH // 2 - self.powerup_image.get_width() // 2, self.card_y))
+
+        # Texte d'instruction
+        if self.animation_complete:
+            button_text = self.font.render("Appuie sur A pour continuer", True, WHITE)
+            button_rect = button_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 50))
+            screen.blit(button_text, button_rect)
