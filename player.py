@@ -1,6 +1,6 @@
 import pygame
 import math
-import random
+from random import choice
 from constants import *
 
 joysticks = []  # Liste vide pour stocker les manettes
@@ -228,9 +228,15 @@ class Player:
 
 
 class PowerUP:
-    def __init__(self, powerup):
-        self.powerup = powerup
-        self.poweruplist = []
+    def __init__(self, activepowerups):
+        self.activepowerups = activepowerups
 
-    def select_powerup(self):
-        print("powerup")
+    def speed_powerup(self):
+        if "speed" in self.activepowerups:
+            self.player.speed = PLAYER_SPEED * 2
+        else : 
+            self.player.speed = PLAYER_SPEED
+        if "heal" in self.activepowerups:
+            self.player.max_health = 200
+        else :
+            self.player.max_health = 100

@@ -19,7 +19,7 @@ map_sprites()
 
 # Création de l'instance du menu
 menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
-game = Game(SCREEN_WIDTH, SCREEN_HEIGHT, joysticks, screen)
+game = Game(SCREEN_WIDTH, SCREEN_HEIGHT, joysticks, screen, font_option)
 
 # Variables d'état
 running = True # Le jeu est il actif ?

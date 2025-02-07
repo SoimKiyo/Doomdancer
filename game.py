@@ -1,10 +1,11 @@
 import pygame
-from player import Player, player_animations, scale_img
+from player import Player, PowerUP, player_animations, scale_img
 from constants import *
 from weapon import Weapon, MeleeAttack
 from enemy import Enemy, enemy_animations
-from ui import DamageText, HealthBar, ScreenFade
+from ui import DamageText, HealthBar, ScreenFade, PowerupScreen
 from map import World, world_data, tile_list, level
+from random import choice
 import csv 
 
 # Arme du joueur
@@ -36,11 +37,12 @@ def reset_level():
 
 # Classe du jeu
 class Game:
-    def __init__(self, screen_width, screen_height, joysticks, screen):
+    def __init__(self, screen_width, screen_height, joysticks, screen, font_option):
         # Dimensions de l'écran
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.screen = screen
+        self.font = font_option
 
         self.joysticks = joysticks
 
@@ -65,8 +67,14 @@ class Game:
         self.weapon = Weapon(weapon_images("basicgun"), self.joysticks, weapon_images("projectile"))
         self.melee_attack = MeleeAttack(self.joysticks, damage_text_group)
 
+        ## Animations
+        # Animation de changement de niveau
         self.start_intro = True
         self.intro_fade = ScreenFade(1, BLACK, 15)
+        # Animation de powerup
+        self.poweruplist = ["speed", "heal"]
+        self.activepowerups = []
+        self.requirement = 10
 
 
         # Couleurs du décor
@@ -111,6 +119,7 @@ class Game:
 
             # Joueur
             self.player.update()
+            PowerUP(self.activepowerups)
 
             # Projectile
             projectile = self.weapon.update(self.player)
@@ -166,6 +175,16 @@ class Game:
             if self.intro_fade.fade(self.screen):
                 self.start_intro = False
                 self.intro_fade.fade_counter = 0
+        
+        # Ecran de Powerup
+        if self.player.coins >= self.requirement and self.player.alive == False: # Si le joueur a suffisament de piece et n'est pas en vie
+            self.requirement += 10 # Augment la somme nécéssaire
+            self.player.coins -= 10 # Retire les pieces du joueurs
+            if self.poweruplist:
+                selected_powerup = choice(self.poweruplist) # Choisis aléatoirement un powerup de la liste
+                self.activepowerups.append(selected_powerup) # Ajoute le powerup dans la liste des powerup actif
+                PowerupScreen(self.activepowerups, self.font)
+        
         
     # Relancer la partie
     def restart_game(self):

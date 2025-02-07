@@ -60,3 +60,38 @@ class ScreenFade():
             fade_complete = True
 
         return fade_complete
+
+# Classe pour afficher l'écran des PowerUp
+class PowerupScreen:
+    def __init__(self, powerup):
+        self.powerup = powerup
+        self.powerup_image = pygame.image.load(f"assets/images/ui/powerup/card_{self.powerup}.png").convert_alpha()
+        self.card_y = SCREEN_HEIGHT # Position initiale de la carte en dehors de l'écran
+        self.card_target_y = SCREEN_HEIGHT // 2 - self.powerup_image.get_height() // 2
+        self.animation_speed = 10 # Vitesse du mouvement de l'animation
+
+        self.animation_complete = False
+
+    def handle_input(self, event):
+        if self.animation_done and event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_a:
+                return True
+        return False
+    
+    def animate_card(self):
+        if self.card_y > self.card_target_y:
+            self.card_y -= self.animation_speed
+        else:
+            self.animation_complete = True
+    
+    def animation(self):
+        self.screen.fill(BLACK) # Fond noir
+
+        # Affiche l'image du powerup
+        if self.card_y > self.card_target_y:
+            self.animate_card()
+        self.screen.blit(self.powerup_image, (SCREEN_WIDTH // 2 - self.powerup_image.get_width() // 2, self.card_y))
+
+        # Affiche le texte et le bouton des entrés en bas de l'écran
+        button_text = self.font.render("Passer", True, WHITE)
+        button_rect = button_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 50))
