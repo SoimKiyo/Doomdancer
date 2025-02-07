@@ -27,7 +27,7 @@ WEAPON_OFFSET_Y = -5   # Décalage vertical de l'arme
 ## Paramètres des ennemis
 ENEMY_WIDTH = 40  # Largeur des ennemis
 ENEMY_HEIGHT = 40  # Hauteur des ennemis
-ENEMY_SPEED = 4  # Vitesse de déplacement des ennemis
+ENEMY_SPEED = 0  # Vitesse de déplacement des ennemis
 ENEMY_COLOR = (255, 128, 0)  # Couleur de la box des ennemies (orange)
 ENEMY_HEALTH = 100  # Points de vie des ennemis
 

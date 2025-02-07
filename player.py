@@ -1,5 +1,6 @@
 import pygame
 import math
+import random
 from constants import *
 
 joysticks = []  # Liste vide pour stocker les manettes
@@ -224,3 +225,12 @@ class Player:
         surface.blit(flipped_image, (self.hitbox.x - SCALE * OFFSET_X, self.hitbox.y - SCALE * OFFSET_Y))
         # Dessine la hitbox (optionnel, pour le debug)
         pygame.draw.rect(surface, PLAYER_COLOR, self.hitbox, 1)
+
+
+class PowerUP:
+    def __init__(self, powerup):
+        self.powerup = powerup
+        self.poweruplist = []
+
+    def select_powerup(self):
+        print("powerup")
