@@ -58,7 +58,7 @@ class Player:
         self.invincibility_timer = 0  # Temps d'invincibilité après un coup
         self.deaths = 0  # Nombre de fois où le joueur est mort
 
-        self.coins = 100 # Nombre de fragments du joueur
+        self.coins = 0 # Nombre de fragments du joueur
 
         # Pour mémoriser la dernière direction de déplacement (normalisée)
         self.last_dx = 0
@@ -246,8 +246,6 @@ class Player:
         if self.frame_index >= len(self.animation_list[self.action]):
             self.frame_index = 0
 
-
-        
         if self.is_invincible and current_time - self.invincibility_timer > 1000:
             self.is_invincible = False  # Désactive l'invincibilité après 1 seconde
 
@@ -262,7 +260,7 @@ class Player:
         # Positionner le sprite par rapport à la hitbox
         surface.blit(flipped_image, (self.hitbox.x - SCALE * OFFSET_X, self.hitbox.y - SCALE * OFFSET_Y))
         # Dessine la hitbox (optionnel, pour le debug)
-        pygame.draw.rect(surface, PLAYER_COLOR, self.hitbox, 1)
+        #pygame.draw.rect(surface, PLAYER_COLOR, self.hitbox, 1)
 
 
 class PowerUP:

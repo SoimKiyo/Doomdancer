@@ -111,9 +111,9 @@ class Enemy:
     def attack(self):
         if self.target.alive:  # Vérifie que le joueur est en vie avant d'attaquer
             
-            self.target.take_damage(40)  # Inflige 10 points de dégâts au joueur
+            self.target.take_damage(5)  # Inflige 10 points de dégâts au joueur
             self.has_attacked = True
-            self.attack_timer = Timer(2000)  # Attente de 2 secondes avant une nouvelle attaque
+            self.attack_timer = Timer(500)  # Attente de 0,5 secondes avant une nouvelle attaque
             self.attack_timer.start()
             self.update_action("idle")  # Passe en idle après l'attaque
 
@@ -165,5 +165,9 @@ class Enemy:
     # Dessine et affiche le monstre
     def draw(self, surface):
         flipped_image = pygame.transform.flip(self.image, self.flip, False)
-        surface.blit(flipped_image, (self.rect.x - SCALE * OFFSET_X * 3, self.rect.y - SCALE * OFFSET_Y * 2))
-        pygame.draw.rect(surface, ENEMY_COLOR, self.rect, 1)
+        # Récupère le rect de l'image retournée et centre-le sur la hitbox (self.rect)
+        image_rect = flipped_image.get_rect(center=self.rect.center)
+        # Affiche l'image à la bonne position
+        surface.blit(flipped_image, image_rect.topleft)
+        # Optionnel : Dessine la hitbox pour le débuggage
+        #pygame.draw.rect(surface, ENEMY_COLOR, self.rect, 1)

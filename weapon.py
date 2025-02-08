@@ -1,6 +1,5 @@
 import pygame
 import math
-import random
 from constants import *
 from ui import DamageText
 from random import choice
@@ -131,7 +130,6 @@ class Weapon():
         if self.reloading and current_time - self.last_reload >= self.reload_time:
             self.ammo = self.max_ammo
             self.reloading = False
-            print("Rechargement terminé")
 
         if  pygame.key.get_pressed()[pygame.K_r]:  # Clavier (touche R)
             current_time = pygame.time.get_ticks()
@@ -172,13 +170,11 @@ class Weapon():
                 self.last_shot = current_time
                 self.ammo -= 1
                 shoot_sound.play()  # Joue le son du tir
-                print(f"Il reste {self.ammo} munitions")
             if not pygame.mouse.get_pressed()[0]:
                 self.fired = False
 
         # Rechargement automatique
         if self.ammo <= 0 and self.reloading == False and (self.fired_joystick or self.fired):
-            print("Rechargement...")
             self.reloading = True
             self.last_reload = current_time
             
@@ -245,7 +241,7 @@ class Projectile(pygame.sprite.Sprite):
         # Détection de collision avec les ennemis
         for enemy in enemy_list:
             if enemy.rect.colliderect(self.rect) and enemy.alive:
-                damage = 10 + random.randint(-5, 5)
+                damage = 10
                 damage_pos = enemy.rect
                 enemy.health -= damage
                 self.kill()
@@ -259,8 +255,6 @@ class Projectile(pygame.sprite.Sprite):
             self.rect.centerx - self.image.get_width() // 2,
             self.rect.centery - self.image.get_height() // 2
         ))
-
-
 
 class MeleeAttack:
     def __init__(self, joysticks, damage_text_group):

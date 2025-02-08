@@ -4,8 +4,6 @@ SCREEN_HEIGHT = 540  # Hauteur de l'écran en pixels
 FPS = 60  # Nombre d'images par seconde (Max)
 
 ## Paramètres du joueur
-PLAYER_WIDTH = 50  # Largeur du joueur
-PLAYER_HEIGHT = 50  # Hauteur du joueur
 PLAYER_SPEED = 5  # Vitesse de déplacement du joueur
 PLAYER_COLOR = (0, 128, 255)  # Couleur de la box du joueur (bleu)
 
@@ -25,9 +23,7 @@ WEAPON_OFFSET_X = 40  # Décalage horizontal de l'arme
 WEAPON_OFFSET_Y = -5   # Décalage vertical de l'arme
 
 ## Paramètres des ennemis
-ENEMY_WIDTH = 40  # Largeur des ennemis
-ENEMY_HEIGHT = 40  # Hauteur des ennemis
-ENEMY_SPEED = 0  # Vitesse de déplacement des ennemis
+ENEMY_SPEED = 1  # Vitesse de déplacement des ennemis
 ENEMY_COLOR = (255, 128, 0)  # Couleur de la box des ennemies (orange)
 ENEMY_HEALTH = 100  # Points de vie des ennemis
 

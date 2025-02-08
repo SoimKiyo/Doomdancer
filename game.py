@@ -68,7 +68,7 @@ class Game:
 
         # Création d'un ennemi
         self.mob_animations = enemy_animations()
-        self.enemy = Enemy(screen_width // 4, screen_height // 4, ENEMY_WIDTH, ENEMY_HEIGHT, ENEMY_HEALTH, self.mob_animations, 1)
+        self.enemy = Enemy(screen_width // 4, screen_height // 4, TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, self.mob_animations, 1)
         self.enemy.set_target(self.player)
         self.enemy_list = []
         self.enemy_list.append(self.enemy)
