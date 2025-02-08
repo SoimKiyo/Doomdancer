@@ -4,6 +4,7 @@ from game import Game
 from player import joysticks
 from constants import *
 from map import map_sprites
+from sfx import set_volume_all
 
 # Initialisation de Pygame
 pygame.init()
@@ -41,6 +42,8 @@ def play_music(music_path):
 
 play_music(MENU_MUSIC)
 pygame.mixer.music.set_volume(menu.music_volume)  # Applique le volume à la musique
+set_volume_all(menu.sound_effects_volume)
+
 
 # Boucle principale
 while running:

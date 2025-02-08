@@ -3,19 +3,30 @@ from player import Player, PowerUP, player_animations, scale_img
 from constants import *
 from weapon import Weapon, MeleeAttack
 from enemy import Enemy, enemy_animations
-from ui import DamageText, HealthBar, ScreenFade, PowerupScreen
+from ui import DamageText, PlayerUI, ScreenFade, PowerupScreen
 from map import World, world_data, tile_list, level
+from sfx import levelclear_sound, levelchange_sound, powerup_sound, gamestart_sound
 from random import choice
 import csv 
 
 # Arme du joueur
 def weapon_images(element):
-    toreturn = 0
     if element == "basicgun":
-        toreturn = scale_img(pygame.image.load("assets/images/weapons/basicgun.png").convert_alpha(), WEAPON_SCALE)
+        # Chargement de l'image statique pour l'arme "basicgun"
+        return scale_img(
+            pygame.image.load("assets/images/weapons/basicgun.png").convert_alpha(),
+            WEAPON_SCALE
+        )
     else:
-        toreturn = scale_img(pygame.image.load("assets/images/weapons/projectile.png").convert_alpha(), WEAPON_SCALE)
-    return toreturn
+        # Chargement de l'animation du projectile (8 frames)
+        frames = []
+        for i in range(8):
+            # On charge chaque frame dans le dossier "assets/images/weapons/projectiles/basicgun/"
+            frame = pygame.image.load(f"assets/images/weapons/projectiles/basicgun/{i}.png").convert_alpha()
+            frame = scale_img(frame, WEAPON_SCALE)
+            frames.append(frame)
+        return frames
+
 
 projectile_group = pygame.sprite.Group()
 damage_text_group = pygame.sprite.Group()
@@ -54,7 +65,6 @@ class Game:
         # Création du joueur
         self.player_animations = player_animations()
         self.player = Player(screen_width // 2, screen_height // 2, TILE_SIZE, TILE_SIZE, self.player_animations)
-        self.health_bar = HealthBar(20, 20, 200, 20, self.player)  # Barre de vie en haut à gauche
 
         # Création d'un ennemi
         self.mob_animations = enemy_animations()
@@ -67,6 +77,7 @@ class Game:
         self.weapon = Weapon(weapon_images("basicgun"), self.joysticks, weapon_images("projectile"))
         self.melee_attack = MeleeAttack(self.joysticks, damage_text_group)
 
+        self.player_ui = PlayerUI(self.player, self.weapon, self.melee_attack, self.font)
         ## Animations
         # Animation de changement de niveau
         self.start_intro = True
@@ -80,9 +91,13 @@ class Game:
         self.powerup_screen = None  # L'objet écran du power-up
         self.powerup_granted = False  # Indique si le power-up a été donné pour éviter les doublons
 
-
+        self.levelclear_played = False 
 
         # Couleurs du décor
+        self.levels_passed = 0
+        # Liste des niveaux disponibles (correspond aux fichiers level1_data.csv, level2_data.csv, level3_data.csv)
+        self.available_levels = [1, 2, 3]
+
         self.background_color = BLACK
         self.world = World()
         self.world.process_data(world_data, tile_list)
@@ -98,26 +113,35 @@ class Game:
         global level, world_data
         if self.player.alive == True:
             # Screen scroll
-            screen_scroll, level_complete = self.player.move(keys, self.screen_rect, self.weapon, self.world.obstacle_tiles, self.world.exit_tile)
+            screen_scroll, level_complete = self.player.move(keys, self.screen_rect, self.weapon, self.world.obstacle_tiles, self.world.exit_tiles)
             self.screen_scroll = screen_scroll
             self.world.update(screen_scroll)
             
             # Mise à jour du Niveau
+            if len(self.enemy_list) == 0 and self.levelclear_played == False:
+                levelclear_sound.play()
+                self.levelclear_played = True
             if level_complete and len(self.enemy_list) == 0:
                 self.start_intro = True
-                level += 1
-                world_data = reset_level()
-                with open(f"levels/level{level}_data.csv", newline="") as csvfile:
-                    reader = csv.reader(csvfile, delimiter=",")
-                    for x, row in enumerate(reader):
-                        for y, tile in enumerate(row):
-                            world_data[x][y] = int(tile)
-                self.world = World()
-                self.world.process_data(world_data, tile_list)
-                #temp_hp = self.player.health
-                #self.player = self.world.player
-                #self.player.health = temp_hp
-                #self.enemy_list = self.world.enemy_list
+                self.levels_passed += 1
+                levelchange_sound.play()
+                self.levelclear_played = False
+
+                if self.levels_passed < 10:
+                    # Choix aléatoire d'un niveau parmi les fichiers level1, level2 et level3
+                    new_level = choice(self.available_levels)
+                    world_data = reset_level()
+                    with open(f"levels/level{new_level}_data.csv", newline="") as csvfile:
+                        reader = csv.reader(csvfile, delimiter=",")
+                        for x, row in enumerate(reader):
+                            for y, tile in enumerate(row):
+                                world_data[x][y] = int(tile)
+                    self.world = World()
+                    self.world.process_data(world_data, tile_list)
+                    # Réinitialiser certains éléments du niveau, par exemple les ennemis
+                else:
+                    # Fin du jeu après 10 niveaux
+                    print("Fin du jeu ! Vous avez terminé 10 niveaux.")
         
             # Mise à jour de l'attaque melee
             self.melee_attack.update(self.player, self.enemy_list, coins_group)
@@ -146,15 +170,21 @@ class Game:
                 enemy.update()
             coins_group.update(self.screen_scroll, self.player)
         else:
-            if not self.player.alive and not self.powerup_granted:  # Vérifie que le power-up n'a pas été accordé
+            if not self.player.alive and not self.powerup_granted:
                 if self.player.coins >= self.requirement and not self.powerup_screen_active:
                     self.requirement += 10
                     self.player.coins -= 10
-                    self.current_powerup = choice(self.poweruplist)
-                    self.activepowerups.append(self.current_powerup)
-                    self.powerup_screen = PowerupScreen(self.current_powerup, self.font)
-                    self.powerup_screen_active = True
-                    self.powerup_granted = True  # Marque que le power-up a été accordé une seule fois
+                    # Filtrer pour obtenir uniquement les powerups non encore acquis
+                    available_powerups = [p for p in self.poweruplist if p not in self.activepowerups]
+                    if available_powerups:
+                        self.current_powerup = choice(available_powerups)
+                        self.activepowerups.append(self.current_powerup)
+                        self.powerup_screen = PowerupScreen(self.current_powerup, self.font)
+                        powerup_sound.play()
+                        self.powerup_screen_active = True
+                        self.powerup_granted = True  # Marque que le powerup a été accordé une seule fois
+                    else:
+                        print("Tous les powerups ont déjà été débloqués !")
 
 
             # Tant que l'écran du power-up est actif, empêcher le jeu de continuer
@@ -175,7 +205,7 @@ class Game:
 
         # Joueur
         self.player.draw(screen)  # Dessine le joueur
-        self.health_bar.draw(screen)  # Dessine la barre de vie
+        self.player_ui.draw(screen)
 
         # Arme
         self.weapon.draw(screen, self.player) # Dessine l'arme
@@ -204,13 +234,15 @@ class Game:
         
     def handle_input(self, event):
         if self.powerup_screen_active and self.powerup_screen:
-            if self.powerup_screen.handle_input(event):
+            # On vérifie si l'écran doit être skippé :
+            if (self.powerup_screen.handle_input(event) or 
+                pygame.mouse.get_pressed()[0] or 
+                (event.type == pygame.JOYBUTTONDOWN and event.button == 0)):
                 self.powerup_screen_active = False
                 self.powerup_screen = None
                 self.powerup_system = PowerUP(self.player, self.activepowerups)  # Appliquer le power-up
                 self.powerup_granted = False  # Réinitialise pour le prochain death
                 self.restart_game()  # Relancer la partie
-
 
 
         
@@ -219,6 +251,7 @@ class Game:
         global level, world_data
 
         self.start_intro = True
+        self.levelclear_played = False 
         level = 0  # Revenir au premier niveau
         world_data = reset_level()
 
@@ -231,9 +264,11 @@ class Game:
         self.world = World()
         self.world.process_data(world_data, tile_list)
 
-        # Réinitialiser le joueur
+        # Réinitialiser le joueur (la vie et autres attributs seront remis à la valeur par défaut)
         self.player = Player(self.screen_width // 2, self.screen_height // 2, TILE_SIZE, TILE_SIZE, player_animations())
-        self.health_bar = HealthBar(20, 20, 200, 20, self.player)
+        
+        # IMPORTANT : Mettre à jour la référence du joueur dans l’interface utilisateur
+        self.player_ui.player = self.player
 
         # Réinitialiser les ennemis
         self.enemy_list = []
@@ -245,3 +280,4 @@ class Game:
     def reset(self):
         self.player.rect.x = self.screen_width // 2
         self.player.rect.y = self.screen_height // 2
+        gamestart_sound.play()

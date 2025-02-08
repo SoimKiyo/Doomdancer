@@ -38,12 +38,12 @@ Semaine 2 : Ajout des mecaniques complexes
 // - Systeme de munition et rechargement (recuperer des munitions via des perfect timming)
 - Cinematique de fin et de debut
 - Systeme de sauvegarde
-- Creation de l'ui
+// - Creation de l'ui
 - Polissage et reorganisation en fin de semaine
 
 Semaine 3 : Finalisation
 - Shader pour ameliorer les lumieres
-- Musiques et SFX
+// - Musiques et SFX
 // - Choix du nom et logo
 - Documentation et video de showcase
 - Cahier des charges

@@ -1,7 +1,9 @@
 import pygame
 import math
-from random import choice
 from constants import *
+from random import choice
+from map import world_data
+from sfx import collect_sound, damage_sound, damagevoice_sound1, damagevoice_sound2, damagevoice_sound3, moveongrass_sound, moveonrock_sound, death_sound
 
 joysticks = []  # Liste vide pour stocker les manettes
 
@@ -14,7 +16,8 @@ def player_animations():
     # Dictionnaire contenant les types d'animations et leur nombre de frames 
     animation_frames = { 
         "idle": 30, 
-        "run": 8  
+        "run": 8,
+        "slash": 11
     }
     animation_list = {key: [] for key in animation_frames}  # Dictionnaire pour stocker les animations 
     for animation, num_frames in animation_frames.items():
@@ -53,8 +56,9 @@ class Player:
         self.alive = True
         self.is_invincible = False  # Empêche les dégâts en boucle
         self.invincibility_timer = 0  # Temps d'invincibilité après un coup
+        self.deaths = 0  # Nombre de fois où le joueur est mort
 
-        self.coins = 100
+        self.coins = 100 # Nombre de fragments du joueur
 
         # Pour mémoriser la dernière direction de déplacement (normalisée)
         self.last_dx = 0
@@ -63,17 +67,22 @@ class Player:
         self.last_mouse_pos = None
         self.using_mouse = False # La souris est-elle utilisé ?
 
+        self.using_gamepad = False  # Indique si le joueur utilise une manette
+
+        self.last_step_sound_time = 0
+        self.distance_since_last_step = 0
+
     def update_screen_limits(self, screen_width, screen_height):
         self.screen_rect = pygame.Rect(0, 0, screen_width, screen_height)
 
     def collect_coin(self):
         self.coins += 1
-        print(f"Fragments collectés: {self.coins}")  # Affichage du compteur dans la console
+        collect_sound.play()
 
     def move(self, keys, screen_rect, weapon, obstacle_tiles, exit_tile):
         if self.alive == False:  # Si le joueur est mort, il ne peut pas bouger
             return [0, 0], False
-    
+
         screen_scroll = [0, 0]
         level_complete = False
         self.running = False
@@ -101,6 +110,9 @@ class Player:
                     dx_gamepad += hat_x
                 if hat_y != 0:
                     dy_gamepad -= hat_y
+        # Vérifie si le joueur utilise une manette
+        self.using_gamepad = any(abs(joystick.get_axis(0)) > 0.15 or abs(joystick.get_axis(1)) > 0.15 for joystick in joysticks)
+
 
         # Calcul du déplacement total
         dx = dx_keyboard + dx_gamepad
@@ -164,9 +176,10 @@ class Player:
         self.hitbox.center = self.rect.center
 
         # Vérifier la collission avec l'élément permettant de changer de niveau
-        if exit_tile[1].colliderect(self.rect):
-            # Vérifier que le joueur est assez proche
-            level_complete = True
+        for tile in exit_tile:
+            if tile[1].colliderect(self.rect):
+                level_complete = True
+                break
 
         # Défilement de l'écran en fonction de la position du joueur
         if self.rect.right > (SCREEN_WIDTH - SCROLL_THRESH):
@@ -182,21 +195,44 @@ class Player:
             screen_scroll[1] = SCROLL_THRESH - self.rect.top
             self.rect.top = SCROLL_THRESH
 
+        if self.running:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.last_step_sound_time >= 300:  # 200 ms entre chaque son
+                tile_x = self.rect.centerx // TILE_SIZE
+                tile_y = self.rect.centery // TILE_SIZE
+                if tile_y < len(world_data) and tile_x < len(world_data[0]):
+                    tile_value = world_data[tile_y][tile_x]
+                    if 12 < tile_value < 29:  # Si c'est de la pierre
+                        moveonrock_sound.play()
+                    else:
+                        moveongrass_sound.play()
+                self.last_step_sound_time = current_time
+
         return screen_scroll, level_complete
     
     def take_damage(self, damage):
         if not self.is_invincible:
             self.health -= damage
-            if self.health < 0:
+            damage_sound.play()
+            voice_sounds = [damagevoice_sound1, damagevoice_sound2, damagevoice_sound3]
+            # Choisit aléatoirement un son de voix et le joue
+            choice(voice_sounds).play()
+            if self.health <= 0:
                 self.health = 0  # Empêche la vie d'aller en dessous de 0
+                death_sound.play()
                 self.alive = False
+                self.deaths += 1
             self.is_invincible = True
             self.invincibility_timer = pygame.time.get_ticks()
 
     def update(self):
         current_time = pygame.time.get_ticks()
-        animation_cooldown = 60 # Temps entre chaque frame
-        if self.running:
+        animation_cooldown = 60  # Valeur par défaut
+
+        if self.is_attacking:
+            self.update_action("slash")
+            animation_cooldown = 60
+        elif self.running:
             self.update_action("run")
             animation_cooldown = 100
         else:
@@ -204,11 +240,13 @@ class Player:
             animation_cooldown = 60
 
         self.image = self.animation_list[self.action][self.frame_index]
-        if current_time - self.update_time > animation_cooldown: # Changer de frame en fonction du cooldown
+        if current_time - self.update_time > animation_cooldown:
             self.frame_index += 1
             self.update_time = current_time
         if self.frame_index >= len(self.animation_list[self.action]):
             self.frame_index = 0
+
+
         
         if self.is_invincible and current_time - self.invincibility_timer > 1000:
             self.is_invincible = False  # Désactive l'invincibilité après 1 seconde
@@ -234,14 +272,20 @@ class PowerUP:
         self.apply_powerups()  # Appliquer immédiatement les effets
 
     def apply_powerups(self):
-        """Applique les power-ups actifs au joueur"""
+        # Powerup "speed" : double la vitesse s'il est actif
         if "speed" in self.activepowerups:
-            self.player.speed = PLAYER_SPEED * 2  # Double la vitesse du joueur
+            self.player.speed = PLAYER_SPEED * 2
         else:
-            self.player.speed = PLAYER_SPEED  # Remet la vitesse normale
+            self.player.speed = PLAYER_SPEED
 
+        # Powerup "heal" : augmente le max_health et applique un bonus de soin une seule fois
         if "heal" in self.activepowerups:
-            self.player.max_health = 200  # Augmente la vie max
-            self.player.health = min(self.player.health + 50, self.player.max_health)  # Ajoute 50 PV sans dépasser max
+            self.player.max_health = 200
+            # On applique le bonus de soin uniquement s'il n'a pas déjà été appliqué
+            if not hasattr(self.player, "heal_applied") or not self.player.heal_applied:
+                self.player.health = min(self.player.health + 50, self.player.max_health)
+                self.player.heal_applied = True
         else:
-            self.player.max_health = 100  # Remet la vie max normale
+            self.player.max_health = 100
+            # Réinitialiser le flag au cas où le joueur perd le powerup
+            self.player.heal_applied = False

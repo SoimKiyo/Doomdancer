@@ -34,7 +34,7 @@ class World():
     def __init__(self):
         self.map_tiles = []
         self.obstacle_tiles = []
-        self.exit_tile = None
+        self.exit_tiles = []
 
     def process_data(self, data, tile_list):
         self.level_lengh = len(data)
@@ -51,7 +51,7 @@ class World():
                 if tile in [29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45]:
                     self.obstacle_tiles.append(tile_data)
                 elif tile == 28:
-                    self.exit_tile = tile_data
+                    self.exit_tiles.append(tile_data)
 
                 # Ajouter l'image data à la liste des tiles
                 if tile >= 0:

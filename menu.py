@@ -1,4 +1,6 @@
 import pygame
+from sfx import set_volume_all, menuback_sound, menuconfirm_sound, menuup_sound, menudown_sound
+
 
 # Classe du menu
 class Menu:
@@ -31,6 +33,9 @@ class Menu:
         # Position verticale du premier élément du menu
         self.option_start_y = 200
         self.option_spacing = 50
+
+        # Variable pour détecter le survol des options avec la souris
+        self.last_hovered_option = None
 
     # Fonction pour afficher les menu
     def draw(self, screen, font_title, font_option):
@@ -81,47 +86,61 @@ class Menu:
                 # Aller vers le haut (flèche haut, Z, ou D-Pad haut)
                 if key in (pygame.K_UP, pygame.K_w) or hat_value[1] == 1:
                     self.selected = (self.selected - 1) % (len(self.pause_menu_options) if self.is_pause_menu else len(self.main_menu_options))
+                    menudown_sound.play()
                 # Aller vers le bas (flèche bas, S, ou D-Pad bas)
                 elif key in (pygame.K_DOWN, pygame.K_s) or hat_value[1] == -1:
                     self.selected = (self.selected + 1) % (len(self.pause_menu_options) if self.is_pause_menu else len(self.main_menu_options))
+                    menudown_sound.play()
                 # Valider (Touche Entrée ou bouton A de la manette)
                 elif key == pygame.K_RETURN or button == 0:
+                    menuconfirm_sound.play()
                     return self.handle_pause_selection() if self.is_pause_menu else self.handle_main_menu_selection()
                 # Retour (Echape ou bouton B de la manette)
                 elif key == pygame.K_ESCAPE or button == 1:
+                    menuback_sound.play()
                     self.in_settings = False
             # Sinon, si on est dans le menu des paramètres
             else:
                 # Aller vers le haut (flèche haut, Z, ou D-Pad haut)
                 if key in (pygame.K_UP, pygame.K_w) or hat_value[1] == 1:
                     self.settings_selected = (self.settings_selected - 1) % len(self.settings_options)
+                    menudown_sound.play()
                 # Aller vers le bas (flèche bas, S, ou D-Pad bas)
                 elif key in (pygame.K_DOWN, pygame.K_s) or hat_value[1] == -1:
                     self.settings_selected = (self.settings_selected + 1) % len(self.settings_options)
+                    menudown_sound.play()
                 # Augmenter une valeur (flèche droite, D-Pad droit)
                 elif key in (pygame.K_RIGHT, pygame.K_d) or hat_value[0] == 1:
                     if self.settings_selected == 0: # Musique
+                        menuup_sound.play()
                         self.music_volume = min(1.0, self.music_volume + 0.1)
+                        pygame.mixer.music.set_volume(self.music_volume)  # Met à jour le volume de la musique
                     elif self.settings_selected == 1: # Effets sonores
+                        menuup_sound.play()
                         self.sound_effects_volume = min(1.0, self.sound_effects_volume + 0.1)
-                        pygame.mixer.music.set_volume(self.music_volume) # Met à jour le volume de la musique
+                        set_volume_all(self.sound_effects_volume) # Met à jour le volume des Effets Sonores
                     #elif self.settings_selected == 2: # Plein écrans
                     #    self.fullscreen = True
                 # Descendre une valeur (flèche gauche, D-Pad gauche)
                 elif key in (pygame.K_LEFT,  pygame.K_q) or hat_value[0] == -1:
                     if self.settings_selected == 0: # Musique
+                        menuup_sound.play()
                         self.music_volume = max(0.0, self.music_volume - 0.1)
                         pygame.mixer.music.set_volume(self.music_volume) # Met à jour le volume de la musique
                     elif self.settings_selected == 1: # Effets sonores
+                        menuup_sound.play()
                         self.sound_effects_volume = max(0.0, self.sound_effects_volume - 0.1)
+                        set_volume_all(self.sound_effects_volume) # Met à jour le volume des Effets Sonores
                     #elif self.settings_selected == 2: # Plein écrans
                     #    self.fullscreen = False
                 # Valider (Touche Entrée ou bouton A de la manette)
                 elif key == pygame.K_RETURN or button == 0:
                     if self.settings_selected == 2: # Retour au menu précédent
+                        menuconfirm_sound.play()
                         self.in_settings = False
                 # Retour (Echape ou bouton B de la manette)
                 elif key == pygame.K_ESCAPE or button == 1:
+                    menuback_sound.play()
                     self.in_settings = False
 
         # Vérifie si un clic de souris a été fait ou si la souris est en mouvement
@@ -149,9 +168,14 @@ class Menu:
             if option_x <= x <= option_x + 200 and option_y <= y <= option_y + 40:
                 self.hovered_option = i # Enregistre l'option survolée
                 self.settings_selected = i if self.in_settings else i # Met à jour le hover
-                self.selected = i # Met à jour l'option sélectionnée
+                self.selected = i # Met à jour l'option sélectionné
+                # Si le survol change, jouer le son de survol
+                if self.last_hovered_option is None or self.last_hovered_option != i:
+                    menudown_sound.play()
+                    self.last_hovered_option = i
 
                 if click: # Si un clic a été détecté
+                    menuconfirm_sound.play()
                     if self.in_settings and i == 2: # Vérifie si "Retour" a été sélectionné dans les paramètres
                         self.in_settings = False # Ferme le menu des paramètres
                     else:

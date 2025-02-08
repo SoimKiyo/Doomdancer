@@ -3,6 +3,7 @@ from constants import *
 from player import scale_img
 from timer import *
 from items import Coin
+from sfx import enemydeath_sound
 import random
 
 # Fonction pour charger les animations
@@ -56,6 +57,7 @@ class Enemy:
 
         # Vérifier si l'ennemie n'as plus de vie
         if self.health <= 0:
+            enemydeath_sound.play()
             self.alive = False
             for _ in range(random.randint(1, 3)):
                 coin = Coin(self.rect.centerx, self.rect.centery)
@@ -108,8 +110,8 @@ class Enemy:
 
     def attack(self):
         if self.target.alive:  # Vérifie que le joueur est en vie avant d'attaquer
-            print("L'ennemi attaque !")
-            self.target.take_damage(10)  # Inflige 10 points de dégâts au joueur
+            
+            self.target.take_damage(40)  # Inflige 10 points de dégâts au joueur
             self.has_attacked = True
             self.attack_timer = Timer(2000)  # Attente de 2 secondes avant une nouvelle attaque
             self.attack_timer.start()

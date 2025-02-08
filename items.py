@@ -5,8 +5,8 @@ import random
 class Coin(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.image.load("assets/images/player/run/0.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (TILE_SIZE, TILE_SIZE))  # Taille ajustée
+        self.image = pygame.image.load("assets/images/items/fragments.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (TILE_SIZE//2, TILE_SIZE//2))  # Taille ajustée
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
 
