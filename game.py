@@ -6,7 +6,7 @@ from enemy import Enemy, enemy_animations
 from ui import DamageText, PlayerUI, ScreenFade, PowerupScreen
 from map import World, world_data, tile_list, level
 from sfx import levelclear_sound, levelchange_sound, powerup_sound, gamestart_sound
-from random import choice
+from random import *
 import csv 
 
 # Arme du joueur
@@ -66,12 +66,13 @@ class Game:
         self.player_animations = player_animations()
         self.player = Player(screen_width // 2, screen_height // 2, TILE_SIZE, TILE_SIZE, self.player_animations)
 
-        # Création d'un ennemi
+        # Création d'ennemies
         self.mob_animations = enemy_animations()
-        self.enemy = Enemy(screen_width // 4, screen_height // 4, TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, self.mob_animations, 1)
-        self.enemy.set_target(self.player)
         self.enemy_list = []
-        self.enemy_list.append(self.enemy)
+        for i in range(randint(3,4)):
+            self.enemy = Enemy(screen_width // randint(1, 4), screen_height // randint(1, 4), TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, self.mob_animations, 1)
+            self.enemy.set_target(self.player)
+            self.enemy_list.append(self.enemy)
 
         # Arme
         self.weapon = Weapon(weapon_images("basicgun"), self.joysticks, weapon_images("projectile"))
@@ -108,6 +109,12 @@ class Game:
         self.screen_height = screen_height
         self.player.update_screen_limits(screen_width, screen_height)
 
+    def enemy_spawn(self, screen_width, screen_height):
+        for i in range(randint(3,4)):
+            self.enemy = Enemy(screen_width // randint(1, 4), screen_height // randint(1, 4), TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, self.mob_animations, 1)
+            self.enemy.set_target(self.player)
+            self.enemy_list.append(self.enemy)
+
     # Met a jour les éléments du jeu (comme le joueur)
     def update(self, keys):
         global level, world_data
@@ -139,6 +146,7 @@ class Game:
                     self.world = World()
                     self.world.process_data(world_data, tile_list)
                     # Réinitialiser certains éléments du niveau, par exemple les ennemis
+                    self.enemy_spawn(SCREEN_WIDTH, SCREEN_HEIGHT) #Créer de nouveaux ennemies
                 else:
                     # Fin du jeu après 10 niveaux
                     print("Fin du jeu ! Vous avez terminé 10 niveaux.")
