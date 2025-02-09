@@ -33,7 +33,7 @@ class Weapon():
         self.use_crosshair = True
 
         # Munitions et rechargement
-        self.max_ammo = 20  # Munitions maximales
+        self.max_ammo = 5  # Munitions maximales
         self.ammo = self.max_ammo  # Munitions actuelles
         self.reloading = False
         self.reload_time = 1500  # Temps de rechargement en millisecondes
