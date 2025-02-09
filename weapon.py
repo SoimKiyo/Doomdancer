@@ -277,12 +277,16 @@ class MeleeAttack:
         current_time = pygame.time.get_ticks()
         melee_trigger = False
 
-        # Vérification de l'entrée manette (bouton A)
+        # Vérification de l'entrée manette (bouton RT)
         for joystick in self.joysticks:
             if joystick.get_numbuttons() > 5:
                 if joystick.get_button(4):
                     melee_trigger = True
                     break
+                
+        # Vérification de l'entrée souris (clic droit)
+        if pygame.mouse.get_pressed()[2]:
+            melee_trigger = True
 
         # On s'assure que le joueur relâche le bouton entre deux attaques
         if not melee_trigger:

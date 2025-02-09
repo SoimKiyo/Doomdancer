@@ -98,7 +98,7 @@ class Game:
         # Liste des niveaux disponibles (correspond aux fichiers level1_data.csv, level2_data.csv, level3_data.csv)
         self.available_levels = [1, 2, 3]
 
-        self.background_color = BLACK
+        self.background_color = WHITE
         self.world = World()
         self.world.process_data(world_data, tile_list)
 
