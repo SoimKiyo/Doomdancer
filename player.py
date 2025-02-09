@@ -3,7 +3,7 @@ import math
 from constants import *
 from random import choice
 from map import world_data
-from sfx import collect_sound, damage_sound, damagevoice_sound1, damagevoice_sound2, damagevoice_sound3, moveongrass_sound, moveonrock_sound, death_sound
+from sfx import collect_sound, damage_sound, damagevoice_sound1, damagevoice_sound2, damagevoice_sound3, moveongrass_sound, moveonrock_sound, death_sound, dash_sound
 
 joysticks = []  # Liste vide pour stocker les manettes
 
@@ -72,6 +72,14 @@ class Player:
         self.last_step_sound_time = 0
         self.distance_since_last_step = 0
 
+        self.dash_active = False
+        self.dash_duration = 300 # Durée du dash en millisecondes
+        self.dash_cooldown = 1300 # Cooldown entre dash
+        self.last_dash_time = 0
+        self.dash_multiplier = 3 # Facteur de multiplication de la vitesse durant le dash
+        self.dash_trigger_released = True # Pour éviter les déclenchements répétés
+
+
     def update_screen_limits(self, screen_width, screen_height):
         self.screen_rect = pygame.Rect(0, 0, screen_width, screen_height)
 
@@ -127,6 +135,28 @@ class Player:
         elif self.last_mouse_pos is None:
             self.using_mouse = False
 
+        # Gestion du dash
+        current_time = pygame.time.get_ticks()
+        dash_input = keys[pygame.K_SPACE]
+        for joystick in joysticks:
+            if joystick.get_button(0):
+                dash_input = True
+                break
+
+        if dash_input:
+            if self.dash_trigger_released and (current_time - self.last_dash_time >= self.dash_cooldown) and not self.dash_active:
+                dash_sound.play()
+                self.dash_active = True
+                self.dash_trigger_released = False
+                self.last_dash_time = current_time
+                self.dash_start_time = current_time
+        else:
+            self.dash_trigger_released = True
+        
+        # Si le dash est actif, on force l'invincibilité
+        if self.dash_active:
+            self.is_invincible = True
+
         # Si le joueur se déplace
         if dx != 0 or dy != 0:
             self.running = True
@@ -144,13 +174,22 @@ class Player:
 
             # Normalisation de la direction pour conserver le dernier vecteur de déplacement
             norm = math.sqrt(dx ** 2 + dy ** 2)
-            norm_dx = dx / norm
-            norm_dy = dy / norm
+            if norm != 0:
+                norm_dx = dx / norm
+                norm_dy = dy / norm
+            else:
+                norm_dx, norm_dy = 0, 0
+
             self.last_dx = norm_dx
             self.last_dy = norm_dy
 
-            dx = norm_dx * self.speed
-            dy = norm_dy * self.speed
+            # Appliquer le dash si actif
+            if self.dash_active:
+                dx = norm_dx * self.speed * self.dash_multiplier
+                dy = norm_dy * self.speed * self.dash_multiplier
+            else:
+                dx = norm_dx * self.speed
+                dy = norm_dy * self.speed
 
         # Appliquer le déplacement et regarder les collisions
         self.rect.x += dx
@@ -208,14 +247,20 @@ class Player:
                         moveongrass_sound.play()
                 self.last_step_sound_time = current_time
 
+        # Fin du dash après la durée définie
+        if self.dash_active and (current_time - self.dash_start_time >= self.dash_duration):
+            self.dash_active = False
+
         return screen_scroll, level_complete
     
     def take_damage(self, damage):
+        # Si le dash est actif, on ignore les dégâts
+        if self.dash_active:
+            return
         if not self.is_invincible:
             self.health -= damage
             damage_sound.play()
             voice_sounds = [damagevoice_sound1, damagevoice_sound2, damagevoice_sound3]
-            # Choisit aléatoirement un son de voix et le joue
             choice(voice_sounds).play()
             if self.health <= 0:
                 self.health = 0  # Empêche la vie d'aller en dessous de 0
@@ -256,9 +301,10 @@ class Player:
             self.update_time = pygame.time.get_ticks()
 
     def draw(self, surface):
-        flipped_image = pygame.transform.flip(self.image, self.flip, False)
-        # Positionner le sprite par rapport à la hitbox
-        surface.blit(flipped_image, (self.hitbox.x - SCALE * OFFSET_X, self.hitbox.y - SCALE * OFFSET_Y))
+        if not self.dash_active:
+            flipped_image = pygame.transform.flip(self.image, self.flip, False)
+            # Positionner le sprite par rapport à la hitbox
+            surface.blit(flipped_image, (self.hitbox.x - SCALE * OFFSET_X, self.hitbox.y - SCALE * OFFSET_Y))
         # Dessine la hitbox (optionnel, pour le debug)
         #pygame.draw.rect(surface, PLAYER_COLOR, self.hitbox, 1)
 

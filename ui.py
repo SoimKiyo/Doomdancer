@@ -104,7 +104,7 @@ class PlayerUI:
 
         # Choix de l'icône input pour la mêlée
         if self.player.using_gamepad:
-            input_melee_path = "assets/images/ui/buttons/button_A.png"
+            input_melee_path = "assets/images/ui/buttons/button_RT.png"
         else:
             input_melee_path = "assets/images/ui/buttons/button_right_click.png"
         input_melee_icon = pygame.image.load(input_melee_path).convert_alpha()

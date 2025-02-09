@@ -182,7 +182,7 @@ class Weapon():
 
 
     def draw(self, surface, player):
-        if player.hide_weapon:
+        if player.hide_weapon or player.dash_active:
             return
             
         # Retourner l'image si nécessaire avant la rotation
@@ -279,14 +279,10 @@ class MeleeAttack:
 
         # Vérification de l'entrée manette (bouton A)
         for joystick in self.joysticks:
-            if joystick.get_numbuttons() > 0:
-                if joystick.get_button(0):
+            if joystick.get_numbuttons() > 5:
+                if joystick.get_button(4):
                     melee_trigger = True
                     break
-
-        # Vérification de l'entrée souris (clic droit)
-        if pygame.mouse.get_pressed()[2]:
-            melee_trigger = True
 
         # On s'assure que le joueur relâche le bouton entre deux attaques
         if not melee_trigger:

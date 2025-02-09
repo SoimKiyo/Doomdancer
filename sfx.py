@@ -17,6 +17,7 @@ damagevoice_sound3 = pygame.mixer.Sound("assets/audio/sfx/player/damage/player_d
 death_sound = pygame.mixer.Sound("assets/audio/sfx/player/death/player_death.wav")
 moveonrock_sound = pygame.mixer.Sound("assets/audio/sfx/player/move/player_rock.wav")
 moveongrass_sound = pygame.mixer.Sound("assets/audio/sfx/player/move/player_grass.wav")
+dash_sound = pygame.mixer.Sound("assets/audio/sfx/player/move/player_dash.wav")
 collect_sound = pygame.mixer.Sound("assets/audio/sfx/player/player_collect.wav")
 
 # Arme
@@ -56,6 +57,7 @@ def set_volume_all(volume):
     death_sound.set_volume(volume)
     moveonrock_sound.set_volume(volume)
     moveongrass_sound.set_volume(volume)
+    dash_sound.set_volume(volume)
     collect_sound.set_volume(volume)
 
     # Arme

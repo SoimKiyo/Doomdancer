@@ -244,11 +244,12 @@ class Game:
                 self.powerup_granted = False  # Réinitialise pour le prochain death
                 self.restart_game()  # Relancer la partie
 
-
-        
     # Relancer la partie
     def restart_game(self):
         global level, world_data
+
+        # Sauvegarder le nombre de morts du joueur actuel
+        previous_deaths = self.player.deaths
 
         self.start_intro = True
         self.levelclear_played = False 
@@ -266,13 +267,14 @@ class Game:
 
         # Réinitialiser le joueur (la vie et autres attributs seront remis à la valeur par défaut)
         self.player = Player(self.screen_width // 2, self.screen_height // 2, TILE_SIZE, TILE_SIZE, player_animations())
-        
+        # Restaurer le nombre de morts sauvegardé
+        self.player.deaths = previous_deaths
         # IMPORTANT : Mettre à jour la référence du joueur dans l’interface utilisateur
         self.player_ui.player = self.player
 
         # Réinitialiser les ennemis
         self.enemy_list = []
-        enemy = Enemy(self.screen_width // 4, self.screen_height // 4, ENEMY_WIDTH, ENEMY_HEIGHT, ENEMY_HEALTH, enemy_animations(), 1)
+        enemy = Enemy(self.screen_width // 4, self.screen_height // 4, TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, enemy_animations(), 1)
         enemy.set_target(self.player)
         self.enemy_list.append(enemy)
 
