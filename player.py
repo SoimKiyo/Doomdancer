@@ -267,7 +267,7 @@ class Player:
                 death_sound.play()
                 self.alive = False
                 self.deaths += 1
-            self.is_invincible = True
+            #self.is_invincible = True
             self.invincibility_timer = pygame.time.get_ticks()
 
     def update(self):

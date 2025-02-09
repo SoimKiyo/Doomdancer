@@ -213,7 +213,6 @@ class Game:
 
         # Joueur
         self.player.draw(screen)  # Dessine le joueur
-        self.player_ui.draw(screen)
 
         # Arme
         self.weapon.draw(screen, self.player) # Dessine l'arme
@@ -229,6 +228,8 @@ class Game:
         damage_text_group.draw(screen)
 
         coins_group.draw(screen)
+
+        self.player_ui.draw(screen) # Dessine l'ui
 
         # Commencer l'intro de transition de niveau
         if self.start_intro == True:

@@ -176,6 +176,7 @@ class Weapon():
         # Rechargement automatique
         if self.ammo <= 0 and self.reloading == False and (self.fired_joystick or self.fired):
             self.reloading = True
+            reload_sound.play()
             self.last_reload = current_time
             
         return projectile
