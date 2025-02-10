@@ -1,5 +1,6 @@
 import pygame
 
+# Classe du Timer pour les actions
 class Timer:
     def __init__(self, duration):
         self.start_time = None

@@ -32,10 +32,11 @@ with open(f"levels/level{level}_data.csv", newline="") as csvfile:
 # Classe pour la map
 class World():
     def __init__(self):
-        self.map_tiles = []
-        self.obstacle_tiles = []
-        self.exit_tiles = []
+        self.map_tiles = [] # Les tiles de la map
+        self.obstacle_tiles = [] # Les tiles ayant une collision
+        self.exit_tiles = [] # Les tiles de fin de niveau
 
+    # Fonction pour charger les informations de la map
     def process_data(self, data, tile_list):
         self.level_lengh = len(data)
         # Reitérer pour chaque niveau du data file
@@ -57,12 +58,14 @@ class World():
                 if tile >= 0:
                     self.map_tiles.append(tile_data)
     
+    # Fonction pour mettre à jour les tiles par rapport au défilement de l'écran
     def update(self, screen_scroll):
         for tile in self.map_tiles:
             tile[2] += screen_scroll[0]
             tile[3] += screen_scroll[1]
             tile[1].center = (tile[2], tile[3])
-                
+
+    # Fonction pour dessiner toutes les tiles    
     def draw(self, surface):
         for tile in self.map_tiles:
             surface.blit(tile[0], tile[1])

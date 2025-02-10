@@ -2,6 +2,7 @@ import pygame
 from constants import *
 import random
 
+# Classe des coins (fragments)
 class Coin(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
@@ -15,6 +16,7 @@ class Coin(pygame.sprite.Sprite):
         self.vel_y = random.uniform(-2, 2)  # Déplacement vertical
         self.friction = 0.95  # Ralentissement progressif
 
+    # Fonction pour mettre à jour les valeurs
     def update(self, screen_scroll, player):
         # Appliquer le scrolling de l'écran
         self.rect.x += screen_scroll[0]
@@ -28,8 +30,9 @@ class Coin(pygame.sprite.Sprite):
 
         # Détection de collision avec le joueur
         if self.rect.colliderect(player.rect):
-            player.collect_coin()  # Augmente le compteur de pièces
-            self.kill()  # Supprime la pièce
+            player.collect_coin() # Augmente le compteur de pièces
+            self.kill() # Supprime la pièce
 
+    # Fonction pour dessiner les pièces
     def draw(self, screen):
         screen.blit(self.image, self.rect)

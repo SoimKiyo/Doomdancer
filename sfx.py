@@ -48,11 +48,8 @@ scene3_sound = pygame.mixer.Sound("assets/audio/sfx/cinematic/scene3.mp3")
 scene4_sound = pygame.mixer.Sound("assets/audio/sfx/cinematic/scene4.mp3")
 scene5_sound = pygame.mixer.Sound("assets/audio/sfx/cinematic/scene5.mp3")
 
+# Fonction pour mettre à jour le volume de chaque sfx (entre 0 et 1)
 def set_volume_all(volume):
-    """
-    Met à jour le volume de tous les effets sonores.
-    La valeur volume doit être comprise entre 0.0 et 1.0.
-    """
     # Joueur
     attack_sound.set_volume(volume)
     attackvoice_sound1.set_volume(volume)

@@ -18,7 +18,7 @@ pygame.joystick.init()  # Initialiser les manettes
 # Chargement des tiles de la map
 map_sprites()
 
-# Création de l'instance du menu
+# Création des instances principales (menu et jeu)
 menu = Menu(SCREEN_WIDTH, SCREEN_HEIGHT)
 game = Game(SCREEN_WIDTH, SCREEN_HEIGHT, joysticks, screen, font_option)
 
@@ -29,20 +29,19 @@ paused = False  # Le jeu est-il en pause ?
 
 # Fonction pour mettre à jour les dimensions de l'écran
 def update_screen_dimensions():
-    global SCREEN_WIDTH, SCREEN_HEIGHT
     SCREEN_WIDTH, SCREEN_HEIGHT = screen.get_size()
     menu.screen_width = SCREEN_WIDTH
     menu.screen_height = SCREEN_HEIGHT
     game.update_screen_limits(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-# Fonction pour jouer la musique en boucle
-def play_music(music_path):
-    pygame.mixer.music.load(music_path)
+# Fonction pour jouer les musique en boucle
+def play_music(music):
+    pygame.mixer.music.load(music)
     pygame.mixer.music.play(-1)  # -1 signifie jouer en boucle
 
 play_music(MENU_MUSIC)
 pygame.mixer.music.set_volume(menu.music_volume)  # Applique le volume à la musique
-set_volume_all(menu.sound_effects_volume)
+set_volume_all(menu.sound_effects_volume) # Applique le volume à tout les effets audio
 
 
 # Boucle principale
@@ -62,26 +61,25 @@ while running:
 
         # Gestion du menu principal et de ses entrées
         if not in_game:
-            pygame.event.set_grab(False)
-            pygame.mouse.set_visible(True)
-            action = menu.handle_input(event)
+            pygame.event.set_grab(False) # Ne capture pas la souris
+            pygame.mouse.set_visible(True) # Rend la souris visible
+            action = menu.handle_input(event) # Gère les actions dans le menu
             if action == "play":
-                in_game = True
-                game.reset()  # Réinitialiser le jeu au démarrage
+                in_game = True # Lance le jeu
                 play_music(GAME_MUSIC)
             elif action == "quit":
-                running = False
+                running = False # Quitte le jeu
         elif paused:
             pygame.event.set_grab(False)
             pygame.mouse.set_visible(True)
             action = menu.handle_input(event)
             if action == "resume":
-                paused = False
-            elif action == "menu":
-                paused = False
+                paused = False # Relance le jeu
+            elif action == "menu": # Enmène dans le menu principal
+                paused = False 
                 in_game = False
                 play_music(MENU_MUSIC)
-            elif action == "quit":
+            elif action == "quit": # Quitte le jeu complètement
                 running = False
         else:
             # Gestion du jeu en cours (Échap ou bouton start pour le menu pause)
@@ -96,10 +94,10 @@ while running:
         pygame.mouse.set_visible(True)
         menu.is_pause_menu = paused
         menu.draw(screen, font_title, font_option)
-    else:
-        pygame.event.set_grab(True)
-        pygame.mouse.set_visible(False)
-        keys = pygame.key.get_pressed()
+    else: # Si en jeu
+        pygame.event.set_grab(True) # On capture la souris pour qu'elle ne puisse pas sortir de la fenetre
+        pygame.mouse.set_visible(False) # On cache la souris au profit du crosshair
+        keys = pygame.key.get_pressed() # On capture les entrés du clavier
         game.update(keys)  # Met à jour le jeu
         game.draw(screen)  # Dessine la scène de jeu
 

@@ -87,7 +87,7 @@ class Player:
         self.coins += 1
         collect_sound.play()
 
-    def move(self, keys, screen_rect, weapon, obstacle_tiles, exit_tile):
+    def move(self, keys, screen_rect, weapon, obstacle_tiles, exit_tile, can_exit):
         if self.alive == False:  # Si le joueur est mort, il ne peut pas bouger
             return [0, 0], False
 
@@ -217,8 +217,22 @@ class Player:
         # Vérifier la collission avec l'élément permettant de changer de niveau
         for tile in exit_tile:
             if tile[1].colliderect(self.rect):
-                level_complete = True
-                break
+                if can_exit:
+                    level_complete = True
+                    break
+                else :
+                    overlap_rect = self.rect.clip(tile[1])
+                    if overlap_rect.width < overlap_rect.height:
+                        if self.rect.centerx < tile[1].centerx:
+                            self.rect.right = tile[1].left
+                        else:
+                            self.rect.left = tile[1].right
+                    else:
+                        if self.rect.centery < tile[1].centery:
+                            self.rect.bottom = tile[1].top
+                        else:
+                            self.rect.top = tile[1].bottom
+
 
         # Défilement de l'écran en fonction de la position du joueur
         if self.rect.right > (SCREEN_WIDTH - SCROLL_THRESH):

@@ -51,20 +51,20 @@ class PlayerUI:
         # Dessiner une ombre pour donner un effet de profondeur
         shadow_offset = 3
         shadow_rect = pygame.Rect(x + shadow_offset, y + shadow_offset, bar_width, bar_height)
-        pygame.draw.rect(screen, HEALTH_SHADOW_COLOR, shadow_rect, border_radius=10)
+        pygame.draw.rect(screen, BLACK, shadow_rect, border_radius=10)
 
         # Fond de la barre (partie vide)
         bg_rect = pygame.Rect(x, y, bar_width, bar_height)
-        pygame.draw.rect(screen, HEALTH_BG_COLOR, bg_rect, border_radius=10)
+        pygame.draw.rect(screen, BLACK_GRAY, bg_rect, border_radius=10)
 
         # Portion de vie (remplie) selon le ratio de vie
         fill_width = int(health_ratio * bar_width)
         if fill_width > 0:  # Pour éviter un dessin avec une largeur nulle
             fill_rect = pygame.Rect(x, y, fill_width, bar_height)
-            pygame.draw.rect(screen, HEALTH_FILL_COLOR, fill_rect, border_radius=10)
+            pygame.draw.rect(screen, CRIMSON, fill_rect, border_radius=10)
 
         # Bordure
-        pygame.draw.rect(screen, HEALTH_BORDER_COLOR, bg_rect, width=2, border_radius=10)
+        pygame.draw.rect(screen, WHITE, bg_rect, width=2, border_radius=10)
 
     def draw_action_icons(self, screen):
         """Affiche les icônes d'attaque agrandies avec leurs inputs (en icônes) centrés, avec un petit décalage vers le bas,
@@ -191,20 +191,20 @@ class PlayerUI:
         # Dessiner une ombre pour la barre de munitions
         shadow_offset = 2
         shadow_rect = pygame.Rect(bar_x + shadow_offset, bar_y + shadow_offset, bar_width, bar_height)
-        pygame.draw.rect(screen, AMMO_SHADOW_COLOR, shadow_rect, border_radius=5)
+        pygame.draw.rect(screen, BLACK, shadow_rect, border_radius=5)
 
         # Fond de la barre
         bg_rect = pygame.Rect(bar_x, bar_y, bar_width, bar_height)
-        pygame.draw.rect(screen, AMMO_BG_COLOR, bg_rect, border_radius=5)
+        pygame.draw.rect(screen, BLACK_GRAY, bg_rect, border_radius=5)
 
         # Portion remplie (du bas vers le haut)
         fill_height = int(progress * bar_height)
         if fill_height > 0:
             fill_rect = pygame.Rect(bar_x, bar_y + (bar_height - fill_height), bar_width, fill_height)
-            pygame.draw.rect(screen, AMMO_FILL_COLOR, fill_rect, border_radius=5)
+            pygame.draw.rect(screen, GOLD, fill_rect, border_radius=5)
 
         # Bordure de la barre
-        pygame.draw.rect(screen, AMMO_BORDER_COLOR, bg_rect, width=2, border_radius=5)
+        pygame.draw.rect(screen, WHITE, bg_rect, width=2, border_radius=5)
 
     def draw_text(self, screen, text, x, y):
         rendered_text = self.font.render(text, True, WHITE)

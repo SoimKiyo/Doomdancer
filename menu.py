@@ -188,22 +188,22 @@ class Menu:
 
     # Fonction pour gérer la sélection d'une option dans le menu principal
     def handle_main_menu_selection(self):
-        if self.selected == 0:
+        if self.selected == 0: # Si la première action est choisis on renvoie "jouer"
             return "play"
-        elif self.selected == 1:
+        elif self.selected == 1: # Si c'est la seconde on ouvre le menu des paramètres
             self.in_settings = True
             self.settings_selected = 0
-        elif self.selected == 2:
+        elif self.selected == 2: # Sinon si c'est la troisieme on quitte
             return "quit"
 
     # Fonction pour gérer la sélection d'une option dans le menu pause
     def handle_pause_selection(self):
-        if self.selected == 0:
+        if self.selected == 0: # Si la première action est choisis on renvoie "reprendre"
             return "resume"
-        elif self.selected == 1:
+        elif self.selected == 1: # Si c'est la seconde on ouvre le menu des paramètres
             self.in_settings = True
             self.settings_selected = 0
-        elif self.selected == 2:
+        elif self.selected == 2: # Sinon si c'est la troisieme on reviens dans le menu principal
             return "menu"
 
     # Fonction pour appliquer les paramètres (ici le plein écran)

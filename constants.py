@@ -41,18 +41,9 @@ COLS = 150  # Nombre de colonnes dans la carte (Fichier CSV)
 RED = (255, 0, 0)  # Rouge
 WHITE = (255, 255, 255)  # Blanc
 BLACK = (0, 0, 0)  # Noir
-
-HEALTH_SHADOW_COLOR = (0, 0, 0)
-HEALTH_BG_COLOR = (40, 40, 40)      # Fond de la barre (vide)
-HEALTH_FILL_COLOR = (220, 20, 60)     # Portion remplie (crimson)
-HEALTH_BORDER_COLOR = WHITE
-
-# Pour la barre de munitions
-AMMO_SHADOW_COLOR = (0, 0, 0)
-AMMO_BG_COLOR = (30, 30, 30)
-AMMO_FILL_COLOR = (255, 215, 0)       # Or
-AMMO_BORDER_COLOR = (200, 200, 200)
-
+BLACK_GRAY = (40, 40, 40) # Gris foncé
+CRIMSON = (220, 20, 60) # Crimson
+GOLD = (255, 215, 0) # Or
 
 ## Musiques
 MENU_MUSIC = "assets/audio/music/ScreenTitleMusic.mp3"
