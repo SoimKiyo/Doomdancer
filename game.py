@@ -246,9 +246,7 @@ class Game:
     def handle_input(self, event):
         if self.powerup_screen_active and self.powerup_screen: # Si le menu est actif
             # On vérifie si l'écran doit être skippé :
-            if (self.powerup_screen.handle_input(event) or 
-                pygame.mouse.get_pressed()[0] or 
-                (event.type == pygame.JOYBUTTONDOWN and event.button == 0)): # (Boutton A de la manette ou Clique Gauche)
+            if (pygame.mouse.get_pressed()[0] or (event.type == pygame.JOYBUTTONDOWN and event.button == 0)): # (Boutton A de la manette ou Clique Gauche)
                 self.powerup_screen_active = False
                 self.powerup_screen = None
                 self.powerup_system = PowerUP(self.player, self.activepowerups)  # Appliquer le power-up

@@ -224,41 +224,46 @@ class Player:
                 if can_exit: # Si le joueur peut sortir du niveau (c'est à dire s'il n'y a plus d'ennemie vivant dans celui-ci)
                     level_complete = True # On marque le niveau comme fini
                     break
-                else : # Sinon
-                    overlap_rect = self.rect.clip(tile[1])
-                    if overlap_rect.width < overlap_rect.height:
-                        if self.rect.centerx < tile[1].centerx:
-                            self.rect.right = tile[1].left
+                else:  # Sinon
+                    overlap_rect = self.rect.clip(tile[1])  # Détermine la zone de chevauchement entre self.rect et tile[1]
+                    if overlap_rect.width < overlap_rect.height:  # Si la largeur de la zone de chevauchement est inférieure à sa hauteur
+                        if self.rect.centerx < tile[1].centerx:  # Si le centre horizontal de self.rect est à gauche du centre de tile[1]
+                            self.rect.right = tile[1].left  # Aligne le côté droit de self.rect avec le côté gauche de tile[1]
                         else:
-                            self.rect.left = tile[1].right
+                            self.rect.left = tile[1].right  # Sinon, on aligne le côté gauche de self.rect avec le côté droit de tile[1]
                     else:
-                        if self.rect.centery < tile[1].centery:
-                            self.rect.bottom = tile[1].top
+                        if self.rect.centery < tile[1].centery:  # Si le centre vertical de self.rect est au-dessus du centre de tile[1]
+                            self.rect.bottom = tile[1].top  # Aligne le bas de self.rect avec le haut de tile[1]
                         else:
-                            self.rect.top = tile[1].bottom
+                            self.rect.top = tile[1].bottom  # Sinon, aligne le haut de self.rect avec le bas de tile[1]
+
 
 
         # Défilement de l'écran en fonction de la position du joueur
-        if self.rect.right > (SCREEN_WIDTH - SCROLL_THRESH):
-            screen_scroll[0] = (SCREEN_WIDTH - SCROLL_THRESH) - self.rect.right
-            self.rect.right = SCREEN_WIDTH - SCROLL_THRESH
-        if self.rect.left < SCROLL_THRESH:
-            screen_scroll[0] = SCROLL_THRESH - self.rect.left
-            self.rect.left = SCROLL_THRESH
-        if self.rect.bottom > (SCREEN_HEIGHT - SCROLL_THRESH):
-            screen_scroll[1] = (SCREEN_HEIGHT - SCROLL_THRESH) - self.rect.bottom
-            self.rect.bottom = SCREEN_HEIGHT - SCROLL_THRESH
-        if self.rect.top < SCROLL_THRESH:
-            screen_scroll[1] = SCROLL_THRESH - self.rect.top
-            self.rect.top = SCROLL_THRESH
+        if self.rect.right > (SCREEN_WIDTH - SCROLL_THRESH):  # Si le bord droit du joueur dépasse la limite de défilement à droite de l'écran
+            screen_scroll[0] = (SCREEN_WIDTH - SCROLL_THRESH) - self.rect.right  # Met à jour le défilement horizontal de l'écran en fonction de la position du joueur
+            self.rect.right = SCREEN_WIDTH - SCROLL_THRESH  # Ajuste la position du joueur pour qu'il reste dans la limite de défilement à droite
 
-        if self.running:
+        if self.rect.left < SCROLL_THRESH:  # Si le bord gauche du joueur dépasse la limite de défilement à gauche de l'écran
+            screen_scroll[0] = SCROLL_THRESH - self.rect.left  # Met à jour le défilement horizontal de l'écran en fonction de la position du joueur
+            self.rect.left = SCROLL_THRESH  # Ajuste la position du joueur pour qu'il reste dans la limite de défilement à gauche
+
+        if self.rect.bottom > (SCREEN_HEIGHT - SCROLL_THRESH):  # Si le bord inférieur du joueur dépasse la limite de défilement en bas de l'écran
+            screen_scroll[1] = (SCREEN_HEIGHT - SCROLL_THRESH) - self.rect.bottom  # Met à jour le défilement vertical de l'écran en fonction de la position du joueur
+            self.rect.bottom = SCREEN_HEIGHT - SCROLL_THRESH  # Ajuste la position du joueur pour qu'il reste dans la limite de défilement en bas
+
+        if self.rect.top < SCROLL_THRESH:  # Si le bord supérieur du joueur dépasse la limite de défilement en haut de l'écran
+            screen_scroll[1] = SCROLL_THRESH - self.rect.top  # Met à jour le défilement vertical de l'écran en fonction de la position du joueur
+            self.rect.top = SCROLL_THRESH  # Ajuste la position du joueur pour qu'il reste dans la limite de défilement en haut
+
+
+        if self.running: # Si on cours
             current_time = pygame.time.get_ticks()
-            if current_time - self.last_step_sound_time >= 300:  # 200 ms entre chaque son
+            if current_time - self.last_step_sound_time >= 300:  # 300 ms entre chaque son
                 tile_x = self.rect.centerx // TILE_SIZE
                 tile_y = self.rect.centery // TILE_SIZE
-                if tile_y < len(world_data) and tile_x < len(world_data[0]):
-                    tile_value = world_data[tile_y][tile_x]
+                if tile_y < len(world_data) and tile_x < len(world_data[0]): # On vérifie que la taille des tiles est bonne
+                    tile_value = world_data[tile_y][tile_x] # On récupère les infos de la tiles sur la quelle le joueur se trouve
                     if 12 < tile_value < 29:  # Si c'est de la pierre
                         moveonrock_sound.play()
                     else:
@@ -280,7 +285,7 @@ class Player:
             self.health -= damage # On lui enlève le nombre de dégât à sa vie
             damage_sound.play()
             voice_sounds = [damagevoice_sound1, damagevoice_sound2, damagevoice_sound3]
-            choice(voice_sounds).play()
+            choice(voice_sounds).play() # Jouer aléatoirement un son de dégât
             if self.health <= 0: # Si le joueur est mort
                 self.health = 0  # Empêche la vie d'aller en dessous de 0
                 death_sound.play()
@@ -327,7 +332,7 @@ class Player:
             flipped_image = pygame.transform.flip(self.image, self.flip, False)
             # Positionner le sprite par rapport à la hitbox
             surface.blit(flipped_image, (self.hitbox.x - SCALE * OFFSET_X, self.hitbox.y - SCALE * OFFSET_Y))
-        # Dessine la hitbox (optionnel, pour le debug)
+        # Dessine la hitbox
         #pygame.draw.rect(surface, PLAYER_COLOR, self.hitbox, 1)
 
 

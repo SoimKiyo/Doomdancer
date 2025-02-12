@@ -29,19 +29,18 @@ class Weapon():
         self.last_joystick_time = 0
 
         self.crosshair_image = pygame.image.load("assets/images/weapons/crosshair.png").convert_alpha()  # Charge l'image du crosshair
-        self.crosshair_pos = pygame.mouse.get_pos()
-        self.use_crosshair = True
+        self.crosshair_pos = pygame.mouse.get_pos() # Mettre la position du crosshair à la position de la souris
+        self.use_crosshair = True # Doit on utiliser le crosshair ?
 
         # Munitions et rechargement
         self.max_ammo = 5  # Munitions maximales
         self.ammo = self.max_ammo  # Munitions actuelles
-        self.reloading = False
+        self.reloading = False # Est ce qu'on recharge ?
         self.reload_time = 1500  # Temps de rechargement en millisecondes
         self.last_reload = pygame.time.get_ticks()
         self.next_reload_time = 0  # Prochaine fin de rechargement
-
         
-
+    # Fonction pour mettre à jour l'arme
     def update(self, player):
         shot_cooldown = 200
         projectile = None
@@ -54,7 +53,7 @@ class Weapon():
             if joystick.get_numaxes() >= 4: # Joystick droit
                 x = joystick.get_axis(2)
                 y = joystick.get_axis(3)
-                if abs(x) > 0.15 or abs(y) > 0.15:
+                if abs(x) > 0.15 or abs(y) > 0.15: # Marge minimum pour considérer le joystick comme en mouvement
                     aim_joy = (x, y)
                     self.last_joystick_time = current_time
                     joystick_active = True
@@ -85,28 +84,34 @@ class Weapon():
             self.use_crosshair = True  # Réactiver le crosshair si la souris est utilisée
 
 
-        # Prioritésation quand manette et souris sont utilisé
+        # Prioritisation quand manette et souris sont utilisés
         if joy_recent and mouse_recent:
             # Combinaison avec pondération : 80 % joystick et 20 % souris
             weight_joy = 0.8
             weight_mouse = 0.2
+            # Calcul des longueurs des vecteurs de visée
             len_joy = math.hypot(aim_joy[0], aim_joy[1])
             len_mouse = math.hypot(aim_mouse[0], aim_mouse[1])
-            # Normalisation des vecteurs
+            # Normalisation des vecteurs de visée
             joy_norm = (aim_joy[0] / len_joy, aim_joy[1] / len_joy) if len_joy != 0 else (0, 0)
             mouse_norm = (aim_mouse[0] / len_mouse, aim_mouse[1] / len_mouse) if len_mouse != 0 else (0, 0)
-            # Calcul de la moyenne pondérée
+            # Calcul de la moyenne pondérée des vecteurs normalisés
             combined_x = weight_joy * joy_norm[0] + weight_mouse * mouse_norm[0]
             combined_y = weight_joy * joy_norm[1] + weight_mouse * mouse_norm[1]
+            # Calcul de la longueur du vecteur combiné
             combined_length = math.hypot(combined_x, combined_y)
+            # Normalisation du vecteur combiné pour obtenir la direction de visée finale
             if combined_length != 0:
                 aim_direction = (combined_x / combined_length, combined_y / combined_length)
             else:
-                aim_direction = (1, 0)
+                aim_direction = (1, 0)  # Direction par défaut si la longueur est nulle
         elif joy_recent:
+            # Si seule la manette a été utilisée récemment
             aim_direction = aim_joy
         elif mouse_recent:
+            # Si seule la souris a été utilisée récemment
             aim_direction = aim_mouse
+
         else:
             # Si aucun input récent, utiliser la dernière direction du joueur (ou viser par défaut à droite)
             if (player.last_dx, player.last_dy) != (0, 0):
@@ -149,16 +154,16 @@ class Weapon():
                         self.reloading = True
                         self.last_reload = current_time
 
-        if self.ammo > 0 and self.reloading == False:
+        if self.ammo > 0 and self.reloading == False: # Si on a assez de munition et qu'on ne recharge pas
             # Tir avec la manette
             for joystick in self.joysticks:
                 if joystick.get_numbuttons() > 5:
                     rb_pressed = joystick.get_button(5) # Bouton RB
                     if rb_pressed and not self.fired_joystick and (current_time - self.last_shot >= shot_cooldown):
                         projectile = Projectile(self.projectile_image, self.rect.centerx, self.rect.centery, self.angle)
-                        self.fired_joystick = True
+                        self.fired_joystick = True # On marque qu'on a tiré avec la manette
                         self.last_shot = current_time
-                        self.ammo -= 1
+                        self.ammo -= 1 # Retire une balle pour chaque tire
                         shoot_sound.play()  # Joue le son du tir
                     if not rb_pressed:
                         self.fired_joystick = False
@@ -166,7 +171,7 @@ class Weapon():
             # Tir avec la souris
             if pygame.mouse.get_pressed()[0] and not self.fired and (current_time - self.last_shot >= shot_cooldown): # Clique gauche
                 projectile = Projectile(self.projectile_image, self.rect.centerx, self.rect.centery, self.angle)
-                self.fired = True
+                self.fired = True # On marque qu'on a tiré avec la souris
                 self.last_shot = current_time
                 self.ammo -= 1
                 shoot_sound.play()  # Joue le son du tir
@@ -181,7 +186,7 @@ class Weapon():
             
         return projectile
 
-
+    # Fonction pour dessiner l'arme
     def draw(self, surface, player):
         if player.hide_weapon or player.dash_active:
             return
@@ -197,17 +202,17 @@ class Weapon():
         # Afficher le crosshair uniquement si la souris est utilisée
         if self.use_crosshair:
             mouse_x, mouse_y = self.crosshair_pos
-            surface.blit(self.crosshair_image, (mouse_x - self.crosshair_image.get_width() // 2,
-                                                mouse_y - self.crosshair_image.get_height() // 2))
+            surface.blit(self.crosshair_image, (mouse_x - self.crosshair_image.get_width() // 2, mouse_y - self.crosshair_image.get_height() // 2))
 
+# Classe des projectiles
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, animation_frames, x, y, angle):
         pygame.sprite.Sprite.__init__(self)
         self.angle = angle
-        self.animation_frames = animation_frames  # La liste des frames d'animation
-        self.frame_index = 0                      # Frame courante
-        self.update_time = pygame.time.get_ticks()  # Temps de la dernière mise à jour
-        self.animation_cooldown = 100             # Cooldown en ms entre chaque frame (ajuste si nécessaire)
+        self.animation_frames = animation_frames # La liste des frames d'animation
+        self.frame_index = 0 # Frame courante
+        self.update_time = pygame.time.get_ticks() # Temps de la dernière mise à jour
+        self.animation_cooldown = 100 # Cooldown en ms entre chaque frame (ajuste si nécessaire)
 
         # Affiche la première frame avec la rotation appliquée
         self.image = pygame.transform.rotate(self.animation_frames[self.frame_index], self.angle - 90)
@@ -217,6 +222,7 @@ class Projectile(pygame.sprite.Sprite):
         self.dx = math.cos(math.radians(self.angle)) * PROJECTILE_SPEED
         self.dy = math.sin(math.radians(self.angle)) * PROJECTILE_SPEED
 
+    # Fonction pour mettre à jour les projectiles
     def update(self, screen_scroll, enemy_list):
         damage = 0
         damage_pos = None
@@ -235,45 +241,44 @@ class Projectile(pygame.sprite.Sprite):
         self.rect.y += screen_scroll[1] + self.dy
 
         # Suppression si le projectile sort de l'écran
-        if (self.rect.right < 0 or self.rect.left > SCREEN_WIDTH or
-            self.rect.bottom < 0 or self.rect.top > SCREEN_HEIGHT):
+        if (self.rect.right < 0 or self.rect.left > SCREEN_WIDTH or self.rect.bottom < 0 or self.rect.top > SCREEN_HEIGHT): 
             self.kill()
 
         # Détection de collision avec les ennemis
         for enemy in enemy_list:
             if enemy.rect.colliderect(self.rect) and enemy.alive:
-                damage = 10
-                damage_pos = enemy.rect
-                enemy.health -= damage
-                self.kill()
+                damage = 10 # Fait un dégât de 10
+                damage_pos = enemy.rect # On marque l'emplacement du dégât comme étant celui de l'ennemie
+                enemy.health -= damage # On enlève la vie à l'ennemie
+                self.kill() # On supprime le projectile
                 break
 
-        return damage, damage_pos
+        return damage, damage_pos # On renvoie les dégâts et leur positions
 
+    # Fonction pour dessiner les projectiles
     def draw(self, surface):
         # Affichage centré du projectile
-        surface.blit(self.image, (
-            self.rect.centerx - self.image.get_width() // 2,
-            self.rect.centery - self.image.get_height() // 2
-        ))
+        surface.blit(self.image, (self.rect.centerx - self.image.get_width() // 2, self.rect.centery - self.image.get_height() // 2))
 
+# Classe des attaque melee
 class MeleeAttack:
     def __init__(self, joysticks, damage_text_group):
-        self.joysticks = joysticks  # Les manettes
-        self.damage = 30  # Nombre de dégâts
-        self.attack_range = 60  # Portée de l'attaque
-        self.attack_cooldown = 300  # Cooldown en ms
-        self.attack_duration = 500  # Durée de l'attaque en ms
-        self.last_attack = 0  # Temps de la dernière attaque
-        self.attacking = False  # Indique si on est en pleine attaque
-        self.attack_start_time = 0  # Temps de début de l'attaque
-        self.next_attack_time = 0  # Prochain moment où l'attaque sera possible
+        self.joysticks = joysticks # Les manettes
+        self.damage = 30 # Nombre de dégâts
+        self.attack_range = 60 # Portée de l'attaque
+        self.attack_cooldown = 300 # Cooldown en ms
+        self.attack_duration = 500 # Durée de l'attaque en ms
+        self.last_attack = 0 # Temps de la dernière attaque
+        self.attacking = False # Indique si on est en pleine attaque
+        self.attack_start_time = 0 # Temps de début de l'attaque
+        self.next_attack_time = 0 # Prochain moment où l'attaque sera possible
 
         self.damage_text_group = damage_text_group
 
         # Nouvel attribut pour éviter les déclenchements en continu
         self.trigger_released = True
 
+    # Fonction pour mettre à jour les attaques de corp à corp
     def update(self, player, enemy_list, coins_group):
         current_time = pygame.time.get_ticks()
         melee_trigger = False
@@ -333,4 +338,4 @@ class MeleeAttack:
         if self.attacking and (current_time - self.attack_start_time >= self.attack_duration):
             self.attacking = False
             player.is_attacking = False
-            player.hide_weapon = False  # Réafficher l'arme
+            player.hide_weapon = False # Réafficher l'arme
