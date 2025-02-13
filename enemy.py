@@ -50,10 +50,10 @@ class Enemy:
         self.has_attacked = False # Savoir si l'ennemie vient d'attaquer
         self.attack_timer = None
 
-    #fonction pour faire des dégats à l'ennemie
+    #fonction pour faire des dégâts à l'ennemie
     def take_damage(self, damage, coins_group):
 
-        self.health -= damage #fais des dégats à l'ennemie
+        self.health -= damage #fais des dégâts à l'ennemie
 
         # Vérifier si l'ennemie n'as plus de vie
         if self.health <= 0:
@@ -66,14 +66,14 @@ class Enemy:
     def set_target(self, player):
         self.target = player
 
-    def ai(self, screen_scroll):
+    def ai(self, screen_scroll, obstacle_tiles):
         # Repositionner un ennemie par rapport au scroll
         self.rect.x += screen_scroll[0]
         self.rect.y += screen_scroll[1]
         if self.alive and self.target:
-            self.move_towards_target()
+            self.move_towards_target(obstacle_tiles)
 
-    def move_towards_target(self):
+    def move_towards_target(self, obstacle_tiles):
         if self.target and self.alive:  # Vérifier que l'ennemi et le joueur sont en vie
             target_x, target_y = self.target.rect.center
             dx, dy = target_x - self.rect.centerx, target_y - self.rect.centery
@@ -101,8 +101,8 @@ class Enemy:
                 else:
                     move_speed = self.speed * 2  # Sprint si proche
 
-                self.rect.x += move_speed * direction_x
-                self.rect.y += move_speed * direction_y
+                self.move_with_collision(direction_x * move_speed, direction_y * move_speed, obstacle_tiles)
+
                 self.flip = direction_x < 0
                 self.update_action("run")
             else:
@@ -117,7 +117,26 @@ class Enemy:
             self.attack_timer.start()
             self.update_action("idle")  # Passe en idle après l'attaque
 
-        
+    
+    # Fonction pour permettre à l'ennemie d'avoir des collisions
+    def move_with_collision(self, dx, dy, obstacle_tiles):
+        # Déplacement horizontal
+        self.rect.x += dx
+        for obstacle in obstacle_tiles:
+            if obstacle[1].colliderect(self.rect):
+                if dx > 0:  
+                    self.rect.right = obstacle[1].left
+                if dx < 0:  
+                    self.rect.left = obstacle[1].right
+
+        # Déplacement vertical
+        self.rect.y += dy
+        for obstacle in obstacle_tiles:
+            if obstacle[1].colliderect(self.rect):
+                if dy > 0:  
+                    self.rect.bottom = obstacle[1].top
+                if dy < 0:  
+                    self.rect.top = obstacle[1].bottom
         
     # Fonction pour gérer l'animation
     def update(self):
@@ -169,5 +188,5 @@ class Enemy:
         image_rect = flipped_image.get_rect(center=self.rect.center)
         # Affiche l'image à la bonne position
         surface.blit(flipped_image, image_rect.topleft)
-        # Optionnel : Dessine la hitbox pour le débuggage
+        # Optionnel : Dessine la hitbox pour le débogage
         #pygame.draw.rect(surface, ENEMY_COLOR, self.rect, 1)

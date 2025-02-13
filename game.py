@@ -100,7 +100,7 @@ class Game:
         self.world = World() # Instance de world
         self.world.process_data(world_data, tile_list) # Process Data de la map
         self.levelclear_played = False # Son a jouer quand un niveau est fini
-        self.levels_passed = 0 # Nombre de level completé
+        self.levels_passed = 0 # Nombre de level complété
         self.available_levels = [1, 2, 3] # Liste des niveaux disponibles (level1_data.csv, level2_data.csv, level3_data.csv,...)
 
     # Fonction qui met a jour la taille de l'écran
@@ -109,9 +109,9 @@ class Game:
         self.screen_height = screen_height
         self.player.update_screen_limits(screen_width, screen_height)
 
-    # Fonction qui fait apparaitre les ennemies
+    # Fonction qui fait apparaître les ennemies
     def enemy_spawn(self, screen_width, screen_height):
-        for i in range(randint(3,4)): # Nombre d'ennemie à faire apparaitre
+        for i in range(randint(3,4)): # Nombre d'ennemie à faire apparaître
             self.enemy = Enemy(screen_width // randint(1, 4), screen_height // randint(1, 4), TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, self.mob_animations, 1)
             self.enemy.set_target(self.player)
             self.enemy_list.append(self.enemy)
@@ -217,7 +217,7 @@ class Game:
 
         # Enemie
         for enemy in self.enemy_list: # Dessine l'ennemi à l'écran
-            enemy.ai(self.screen_scroll)
+            enemy.ai(self.screen_scroll, self.world.obstacle_tiles)
             enemy.draw(screen)
 
         coins_group.draw(screen) # Dessine les pièces

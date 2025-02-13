@@ -75,7 +75,7 @@ while running:
             action = menu.handle_input(event)
             if action == "resume":
                 paused = False # Relance le jeu
-            elif action == "menu": # Enmène dans le menu principal
+            elif action == "menu": # Emmène dans le menu principal
                 paused = False 
                 in_game = False
                 play_music(MENU_MUSIC)
@@ -95,7 +95,7 @@ while running:
         menu.is_pause_menu = paused
         menu.draw(screen, font_title, font_option)
     else: # Si en jeu
-        pygame.event.set_grab(True) # On capture la souris pour qu'elle ne puisse pas sortir de la fenetre
+        pygame.event.set_grab(True) # On capture la souris pour qu'elle ne puisse pas sortir de la fenêtre
         pygame.mouse.set_visible(False) # On cache la souris au profit du crosshair
         keys = pygame.key.get_pressed() # On capture les entrés du clavier
         game.update(keys)  # Met à jour le jeu

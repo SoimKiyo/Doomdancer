@@ -84,7 +84,7 @@ class Weapon():
             self.use_crosshair = True  # Réactiver le crosshair si la souris est utilisée
 
 
-        # Prioritisation quand manette et souris sont utilisés
+        # Priorisation quand manette et souris sont utilisés
         if joy_recent and mouse_recent:
             # Combinaison avec pondération : 80 % joystick et 20 % souris
             weight_joy = 0.8

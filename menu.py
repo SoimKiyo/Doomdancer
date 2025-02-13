@@ -26,7 +26,7 @@ class Menu:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.background_image = pygame.image.load("assets/images/ui/menu/menuback.png")  # Image de fond
-        self.background_image = pygame.transform.scale(self.background_image, (screen_width, screen_height)) # Redimenssione l'image par rapport à la fenetre
+        self.background_image = pygame.transform.scale(self.background_image, (screen_width, screen_height)) # Redimensionne l'image par rapport à la fenetre
         self.logo_image = pygame.image.load("assets/images/ui/menu/logo.png")  # Image du logo
 
 
@@ -72,7 +72,7 @@ class Menu:
 
     # Fonction pour gérer les entrées clavier/manette dans les menu
     def handle_input(self, event):
-        # Vérifie si un événement a était déclanché par une touche de clavier, un bouton de manette ou le D-Pad
+        # Vérifie si un événement a était déclenché par une touche de clavier, un bouton de manette ou le D-Pad
         if event.type in (pygame.KEYDOWN, pygame.JOYBUTTONDOWN, pygame.JOYHATMOTION):
             # Récupère la touche du clavier si l'événement concerne le clavier, sinon None
             key = getattr(event, 'key', None)
@@ -95,7 +95,7 @@ class Menu:
                 elif key == pygame.K_RETURN or button == 0:
                     menuconfirm_sound.play()
                     return self.handle_pause_selection() if self.is_pause_menu else self.handle_main_menu_selection()
-                # Retour (Echape ou bouton B de la manette)
+                # Retour (Échappe ou bouton B de la manette)
                 elif key == pygame.K_ESCAPE or button == 1:
                     menuback_sound.play()
                     self.in_settings = False
@@ -193,7 +193,7 @@ class Menu:
         elif self.selected == 1: # Si c'est la seconde on ouvre le menu des paramètres
             self.in_settings = True
             self.settings_selected = 0
-        elif self.selected == 2: # Sinon si c'est la troisieme on quitte
+        elif self.selected == 2: # Sinon si c'est la troisième on quitte
             return "quit"
 
     # Fonction pour gérer la sélection d'une option dans le menu pause
@@ -203,7 +203,7 @@ class Menu:
         elif self.selected == 1: # Si c'est la seconde on ouvre le menu des paramètres
             self.in_settings = True
             self.settings_selected = 0
-        elif self.selected == 2: # Sinon si c'est la troisieme on reviens dans le menu principal
+        elif self.selected == 2: # Sinon si c'est la troisième on reviens dans le menu principal
             return "menu"
 
     # Fonction pour appliquer les paramètres (ici le plein écran)

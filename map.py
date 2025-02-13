@@ -6,7 +6,7 @@ from constants import *
 # 0 à 28 Sols
 # 29 à 33 Murs
 # 34 & 35 Bordure Droite // 36 & 37 Bordure Gauche // 38 Bordure Bas // 39 Coin Bas-Droit & 40 Bas-Gauche & 41 Haut-Gauche & 42 Haut-Bas 
-# 43 à 45 Props avec collisions // 46 à 51 Props sans collissions
+# 43 à 45 Props avec collisions // 46 à 51 Props sans collisions
 tile_list = []
 def map_sprites():
     for x in range(TILE_TYPES):

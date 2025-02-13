@@ -97,7 +97,7 @@ class PlayerUI:
         else: # Si on utilise le clavier
             input_shoot_path = "assets/images/ui/buttons/button_left_click.png"
         input_shoot_icon = pygame.image.load(input_shoot_path).convert_alpha() # On charge l'image
-        input_shoot_icon = pygame.transform.scale(input_shoot_icon, (input_icon_size, input_icon_size)) # On redimenssionne l'image
+        input_shoot_icon = pygame.transform.scale(input_shoot_icon, (input_icon_size, input_icon_size)) # On redimensionne l'image
         # Centrage de l'input sur l'image pour le tir avec le décalage vertical
         shoot_center = (x_shoot + action_icon_size // 2, y_action + action_icon_size // 2 + vertical_offset)
         input_shoot_rect = input_shoot_icon.get_rect(center=shoot_center)
@@ -114,7 +114,7 @@ class PlayerUI:
         else: # Si on utilise le clavier
             input_melee_path = "assets/images/ui/buttons/button_right_click.png"
         input_melee_icon = pygame.image.load(input_melee_path).convert_alpha() # On charge l'image
-        input_melee_icon = pygame.transform.scale(input_melee_icon, (input_icon_size, input_icon_size)) # On redimenssionne l'image
+        input_melee_icon = pygame.transform.scale(input_melee_icon, (input_icon_size, input_icon_size)) # On redimensionne l'image
         # Centrage de l'input sur l'image pour le tir avec le décalage vertical
         melee_center = (x_melee + action_icon_size // 2, y_action + action_icon_size // 2 + vertical_offset)
         input_melee_rect = input_melee_icon.get_rect(center=melee_center)

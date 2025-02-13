@@ -7,7 +7,7 @@ from sfx import collect_sound, damage_sound, damagevoice_sound1, damagevoice_sou
 
 joysticks = []  # Liste vide pour stocker les manettes
 
-# Fonction pour redimenssioner les images
+# Fonction pour redimensionner les images
 def scale_img(image, scale):
     w = image.get_width()
     h = image.get_height()
@@ -77,7 +77,7 @@ class Player:
         self.dash_active = False # Le dash est il actif (en cours d'utilisation) ?
         self.dash_duration = 300 # Durée du dash en millisecondes
         self.dash_cooldown = 1300 # Cooldown entre dash
-        self.last_dash_time = 0 # Temps depuis le dernié dash
+        self.last_dash_time = 0 # Temps depuis le dernier dash
         self.dash_multiplier = 3 # Facteur de multiplication de la vitesse durant le dash
         self.dash_trigger_released = True # Pour éviter les déclenchements répétés
 
@@ -117,7 +117,7 @@ class Player:
                     dy_gamepad += vert_move
             # D-Pad
             if joystick.get_numhats() > 0:
-                hat_x, hat_y = joystick.get_hat(0) # Mouvement vetical/horizontal
+                hat_x, hat_y = joystick.get_hat(0) # Mouvement vertical/horizontal
                 if hat_x != 0: # Si on appuie sur une flèche du dpad
                     dx_gamepad += hat_x
                 if hat_y != 0: # Si on appuie sur une flèche du dpad
@@ -154,7 +154,7 @@ class Player:
                 self.last_dash_time = current_time # On met à jour la date de la dernière utilisation du dash
                 self.dash_start_time = current_time # On met à jour la date du début du dash
         else:
-            self.dash_trigger_released = True # On marque la touche du dash comme relaché
+            self.dash_trigger_released = True # On marque la touche du dash comme relâché
         
         # Si le dash est actif, on force l'invincibilité
         if self.dash_active:
@@ -218,7 +218,7 @@ class Player:
         # Mise à jour de la hitbox pour qu'elle suive le joueur
         self.hitbox.center = self.rect.center
 
-        # Vérifier la collission avec l'élément permettant de changer de niveau
+        # Vérifier la collision avec l'élément permettant de changer de niveau
         for tile in exit_tile:
             if tile[1].colliderect(self.rect): # S'il y a une collision
                 if can_exit: # Si le joueur peut sortir du niveau (c'est à dire s'il n'y a plus d'ennemie vivant dans celui-ci)
