@@ -20,6 +20,9 @@ Tirer RB / Clique Gauche
 Le curseur peut aller n'importe ou et fait bouger la camera
 Auto reload
 
+todo :
+boss/ennemies/debug/système de sauvegarde/niveaux/cinématique
+
 # Roadmap
 Semaine 1 : Ajout de toutes les bases
 - Sprites
