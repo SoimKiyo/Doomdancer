@@ -9,21 +9,24 @@ import random
 # Fonction pour charger les animations
 def enemy_animations():
     mob_animations = []
-    mob_types = ["player", "mob"]
-
-    animation_frames = { # Dictionnaire contenant les types d'animations et leur nombre de frames
-        "idle": 2,
-        "run": 8 
+    mob_types = ["mob"]  # Différent type d'ennemie
+    
+    animation_frames = {  # Dictionnaire contenant les types d'animations et leur nombre de frames
+        "idle": 8,
+        "run": 6,
+        "attack": 7
     }
+    
     for mob in mob_types:
         animation_list = {key: [] for key in animation_frames}  # Dictionnaire pour stocker les animations
         for animation, num_frames in animation_frames.items():
             for i in range(num_frames):  # Charger chaque sprite
-                img = pygame.image.load(f"assets/images/{mob}/{animation}/{i}.png").convert_alpha() # Charger l'image
+                img = pygame.image.load(f"assets/images/{mob}/{animation}/{i}.png").convert_alpha()  # Charger l'image depuis "mob"
                 img = scale_img(img, SCALE)  # Redimensionner
                 animation_list[animation].append(img)  # Ajouter à la liste
         mob_animations.append(animation_list)
     return mob_animations
+
 
 # Classe de l'ennemie
 class Enemy:
@@ -46,6 +49,7 @@ class Enemy:
         self.health = health
         self.alive = True
 
+        self.isattacking = False
         self.target = None  # Référence au joueur
         self.has_attacked = False # Savoir si l'ennemie vient d'attaquer
         self.attack_timer = None
@@ -109,14 +113,13 @@ class Enemy:
                 self.update_action("idle")  # Met en idle si aucun mouvement
 
     def attack(self):
-        if self.target.alive:  # Vérifie que le joueur est en vie avant d'attaquer
-            
-            self.target.take_damage(5)  # Inflige 10 points de dégâts au joueur
+        if self.target.alive:  # Vérifie que le joueur est en vie
+            self.isattacking = True
+            self.target.take_damage(5)  # Inflige 5 points de dégâts au joueur
             self.has_attacked = True
             self.attack_timer = Timer(500)  # Attente de 0,5 secondes avant une nouvelle attaque
             self.attack_timer.start()
-            self.update_action("idle")  # Passe en idle après l'attaque
-
+            # Ne pas forcer l'animation à idle ici, c'est géré dans update()
     
     # Fonction pour permettre à l'ennemie d'avoir des collisions
     def move_with_collision(self, dx, dy, obstacle_tiles):
@@ -140,38 +143,41 @@ class Enemy:
         
     # Fonction pour gérer l'animation
     def update(self):
-        # check if character has died
         if self.health <= 0:
             self.health = 0
             self.alive = False
-        animation_cooldown = 60
 
-        # Vérifier si l'ennemi court ou est inactif
-        if self.speed != 0:  # Si l'ennemi se déplace
-            self.update_action("run")
-            self.running = True
-            animation_cooldown = 100
-        else:  # Si l'ennemi est immobile
-            self.update_action("idle")
-            self.running = False
+        # Priorité à l'animation d'attaque
+        if self.isattacking:
+            if self.action != "attack":
+                self.update_action("attack")
+            animation_cooldown = 60
+        elif self.speed != 0:
+            if self.action != "run":
+                self.update_action("run")
+            animation_cooldown = 80
+        else:
+            if self.action != "idle":
+                self.update_action("idle")
             animation_cooldown = 60
 
-        # Mettre à jour l'image de l'animation
+        # Met à jour l'image selon la frame actuelle
         self.image = self.animation_list[self.action][self.frame_index]
 
-        # Vérifier combien de temps il c'est écoulé depuis la dernière frame
+        # Gestion du temps d'affichage de chaque frame
         if pygame.time.get_ticks() - self.update_time > animation_cooldown:
             self.frame_index += 1
             self.update_time = pygame.time.get_ticks()
-        
-        # Vérifier si l'animation est fini
-        if self.frame_index >= len(self.animation_list[self.action]):
-            self.frame_index = 0
 
-        # Inverser la direction si l'ennemi atteint les bords de l'écran
-        if self.rect.right > self.screen_rect.right or self.rect.left < self.screen_rect.left:
-            self.speed = -self.speed  # Inverser la direction
-            self.flip = not self.flip  # Inverser l'orientation de l'ennemi (gauche/droite)
+            # Si on est en animation d'attaque et qu'on a atteint la dernière frame
+            if self.action == "attack":
+                if self.frame_index >= len(self.animation_list["attack"]):
+                    self.frame_index = 0
+                    self.isattacking = False  # Fin de l'attaque, on repasse en idle
+                    self.update_action("idle")
+            else:
+                if self.frame_index >= len(self.animation_list[self.action]):
+                    self.frame_index = 0
 
     def update_action(self, new_action):
         # Vérifier si la nouvelle action est différente de l'ancienne

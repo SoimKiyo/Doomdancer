@@ -71,7 +71,7 @@ class Game:
         self.mob_animations = enemy_animations()
         self.enemy_list = []
         for i in range(randint(3,4)):
-            self.enemy = Enemy(screen_width // randint(1, 4), screen_height // randint(1, 4), TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, self.mob_animations, 1)
+            self.enemy = Enemy(screen_width // randint(1, 4), screen_height // randint(1, 4), TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, self.mob_animations, 0)
             self.enemy.set_target(self.player)
             self.enemy_list.append(self.enemy)
 
@@ -112,7 +112,7 @@ class Game:
     # Fonction qui fait apparaître les ennemies
     def enemy_spawn(self, screen_width, screen_height):
         for i in range(randint(3,4)): # Nombre d'ennemie à faire apparaître
-            self.enemy = Enemy(screen_width // randint(1, 4), screen_height // randint(1, 4), TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, self.mob_animations, 1)
+            self.enemy = Enemy(screen_width // randint(1, 4), screen_height // randint(1, 4), TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, self.mob_animations, 0)
             self.enemy.set_target(self.player)
             self.enemy_list.append(self.enemy)
 
