@@ -1,0 +1,114 @@
+main.py # Point d'entré principal
+game.py # Logique principal du jeu
+menu.py # Getsion du menu principal et des parametres 
+cinematic.py # Gestion des cinématiques
+save_manager.py # Gestion des sauvegardes
+player.py # Classe du joueur
+enemy.py # Classe des ennemies
+map.py # Generation procedurale des donjons
+ui.py # Interactif utilisateur (HUD)
+
+B/RL pour la roulade / Espace
+X pour recharge / R
+Tirer RB / Clique Gauche
+Auto reload
+
+# Roadmap
+Semaine 1 : Ajout de toutes les bases
+- Sprites
+- Map
+- Enemies et leur IA + Boss
+// - Joueur et ses deplacements
+// - Arme et melee
+// - Menu
+// - Systeme de vie et mort/respawn
+// - Pieces (Fragments de memoire) drop par les ennemies
+- Polissage et reorganisation en fin de semaine
+
+Semaine 2 : Ajout des mecaniques complexes
+// - Systeme de powerup
+- Systeme de perfect timing
+// - Systeme de munition et rechargement (recuperer des munitions via des perfect timming)
+- Cinematique de fin et de debut
+- Systeme de sauvegarde
+// - Creation de l'ui
+- Polissage et reorganisation en fin de semaine
+
+Semaine 3 : Finalisation
+- Shader pour ameliorer les lumieres
+// - Musiques et SFX
+// - Choix du nom et logo
+- Documentation et video de showcase
+- Cahier des charges
+- Testing final et resolutions des bugs + reorganisation/commentaires
+
+////
+
+- Jeu Solo
+- 2D
+- Roguelite (donc boss a la fin)
+- Vue du dessus
+- Simple mais propre
+- Ameliorations au respawn
+- Futuriste / Fantasique
+- Mouvement libre
+- Bullet hell allégé
+
+- System de (parry)/Perfect timing sur une attaque mélée sur un ennemie, 
+le jeu se ralentie (ou s'arrette) et le fond se noirci, le system permet de one shot
+et quand on one shot on se fait "propulser" en arriere a la fin et si on rate on se prend
+un degat de l'ennemie (Le system est assez rapide en soit pour perfect)
+
+- Une ability de base ou tu peut dash tu peux pas te faire toucher
+- La monnaie c'est les morceau de mémoire
+ 
+  1. Armes de Mêlée + Projectiles (Mode Alternatif)
+Concept :
+Le joueur attaque en mêlée, mais lorsqu'il réussit un perfect parry, il gagne une charge d'arme qu'il peut tirer ensuite.
+
+Exemple de mécanique :
+Attaque mêlée : Pose une marque sur l’ennemi.
+Appuyer sur "Tir Spirituel" après un parry : La marque explose et fait des dégâts.
+Si la marque explose sur un ennemi, il peut aussi ralentir les balles alentour.
+
+
+RemnA.I.nt - Script du jeu
+(Écran noir, bruit d’interface corrompue, texte qui apparaît lentement en blanc digitalisé)
+
+Système en ligne...
+Erreur : données manquantes.
+Reconstruction de la mémoire...
+Statut : Unité autonome - Déconnectée du réseau.
+
+(On entend un bruit de réveil, une machine qui s’active, un ventilateur qui tourne.)
+
+(L’écran s’illumine : Vue subjective d’une interface, affichant une silhouette en contre-jour.)
+
+L’héroïne, Unit A-1N, se réveille au cœur d’une cité en ruine envahie par la nature.
+Elle voit des bâtiments effondrés, des forêts qui ont repris leurs droits sur les rues.
+Des lumières rouges s’allument au loin : des drones de sécurité corrompus s’activent et patrouillent.
+
+voix intérieure (IA/humaine en elle) :
+
+"Où… où suis-je ? Qui… suis-je ?"
+"Pourquoi… suis-je seule ?"
+
+
+
+Contexte :
+
+L’humanité a presque disparu, balayée par une catastrophe inconnue.
+La nature et une force magique étrange ont repris le monde.
+Les machines de défense, comme elle, sont devenues hors de contrôle, sauf elle.
+Les humains survivants se cachent, terrorisés par les robots.
+Elle doit retrouver les survivants et leur redonner espoir, tout en découvrant la vérité sur son origine.
+
+Gameplay Roguelike :
+
+Exploration procédurale → Chaque partie du monde est générée différemment.
+Ennemis : Drones de sécurité corrompus, créatures mutantes nées de la magie.
+Système d’amélioration : Récupérer des morceaux de mémoire pour débloquer des capacités.
+
+
+Chaque run permet de récupérer de la mémoire, débloquant des morceaux du passé.
+À mesure qu’elle retrouve ses souvenirs, on découvre qui elle était avant (peut-être une humaine transférée dans ce corps mécanique).
