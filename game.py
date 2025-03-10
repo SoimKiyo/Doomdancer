@@ -283,6 +283,6 @@ class Game:
 
         # Réinitialiser les ennemis
         self.enemy_list = []
-        enemy = Enemy(self.screen_width // 4, self.screen_height // 4, TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, enemy_animations(), 1)
+        enemy = Enemy(self.screen_width // 4, self.screen_height // 4, TILE_SIZE, TILE_SIZE, ENEMY_HEALTH, enemy_animations(), 0)
         enemy.set_target(self.player)
         self.enemy_list.append(enemy)
